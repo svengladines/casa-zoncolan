@@ -49,12 +49,16 @@ public class Thermostat {
     protected final String passWordField
 		= "password";
     
-    protected final String userName
-    	= "sven.gladines@telenet.be";
+    protected final String userName;
     
-    protected final String passWord
-    	= "honeyWell.16";
+    protected final String passWord;
     
+    public Thermostat( String userName, String passWord ) {
+    	
+    	this.userName = userName;
+    	this.passWord = passWord;
+    	
+    }
 	
 	public void connect() {
 		
@@ -94,7 +98,9 @@ public class Thermostat {
 		
 	    headers.put("User-Agent", "RestSharp 104.4.0.0");
 	    headers.put("Content-Type", "application/x-www-form-urlencoded");
+	    headers.put("Accept", "application/json");
 	    headers.put("applicationId", this.appID );
+	    headers.put("Authorization", "Basic MmZmMTUwYjQtYTM4NS00MGQ1LTg4OTktNWM2ZDg4ZDJjYmMyOjZGODhCOTgwLUI5OTUtNDUxRC04RTJBLTY2REMyQkNCRDU3MQ==" );
 
 		return headers;
 		
@@ -112,15 +118,6 @@ public class Thermostat {
 		fields.add( this.scopeField, this.scope );
 		
 		return fields;
-		
-	}
-	
-	public static void main( String[] args ) {
-		
-		Thermostat t
-			= new Thermostat();
-		
-		t.connect();
 		
 	}
 
