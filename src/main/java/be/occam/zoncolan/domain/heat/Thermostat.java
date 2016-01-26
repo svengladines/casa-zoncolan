@@ -1,6 +1,7 @@
 package be.occam.zoncolan.domain.heat;
 
-import static be.occam.utils.spring.web.Client.*;
+import static be.occam.utils.spring.web.Client.getJSON;
+import static be.occam.utils.spring.web.Client.postMultiPart;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -18,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
 import be.occam.zoncolan.domain.heat.honeywell.AccessToken;
+import be.occam.zoncolan.domain.heat.honeywell.Account;
 
 public class Thermostat {
 	
@@ -28,7 +30,7 @@ public class Thermostat {
 		= "tccna.honeywell.com";
 	
 	protected final String basePath
-		= "/WebAPI/emea/api/v1/";
+		= "/WebAPI/emea/api/v1";
 	
 	protected final String tokenPath
 		= "/Auth/OAuth/Token";
@@ -59,6 +61,8 @@ public class Thermostat {
     protected final String passWord;
     
     protected AccessToken accessToken;
+    
+    protected Account account;
     
     protected final ObjectMapper objectMapper;
     
@@ -125,7 +129,7 @@ public class Thermostat {
 	public Thermostat account() {
 		
 		String url
-			= new StringBuilder("https://").append( this.host ).append( this.basePath ).append( "userAccount" ).toString();
+			= new StringBuilder("https://").append( this.host ).append( this.basePath ).append( "/userAccount" ).toString();
 		
 		
 		try {
@@ -141,6 +145,10 @@ public class Thermostat {
 				
 			logger.info( "json = [{}]", responseJSON );
 			
+			this.account = this.objectMapper.reader( Account.class ).readValue( responseJSON );
+			
+			logger.info( "user id is [{}]", this.account.getUserId() );
+			
 		}
 		catch ( HttpClientErrorException e) {
 			try {
@@ -149,14 +157,51 @@ public class Thermostat {
 				logger.info( new String( x ) );
 			}
 			catch( UnsupportedEncodingException ignore ) {}
-		}
-		/*
 		} catch (JsonProcessingException e) {
 			logger.warn( "could not parse JSON response", e );
 		} catch (IOException e) {
 			logger.warn( "could not process JSON response", e );
 		} 
-		*/
+		
+		return this;
+		
+	}
+	
+	public Thermostat locations() {
+		
+		String url
+			= new StringBuilder("https://").append( this.host ).append( this.basePath ).append( "/location/installationInfo?userId={userId}&includeTemperatureControlSystems=True" ).toString();
+		
+		try {
+		
+			ResponseEntity<String> getResponse
+				= getJSON( url, String.class, this.headers(), this.account.getUserId() );
+			
+			logger.info( "account GET response code: {} ", getResponse.getStatusCode() );
+			logger.info( "account GET response body: {} ", getResponse.getBody() );
+			
+			String responseJSON
+					= getResponse.getBody();
+				
+			logger.info( "json = [{}]", responseJSON );
+			
+			// this.account = this.objectMapper.reader( Account.class ).readValue( responseJSON );
+			
+			// logger.info( "user id is [{}]", this.account.getUserId() );
+			
+		}
+		catch ( HttpClientErrorException e) {
+			try {
+				String x 
+					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
+				logger.info( new String( x ) );
+			}
+			catch( UnsupportedEncodingException ignore ) {}
+		} /*catch (JsonProcessingException e) {
+			logger.warn( "could not parse JSON response", e );
+		} catch (IOException e) {
+			logger.warn( "could not process JSON response", e );
+		} */
 		
 		return this;
 		
