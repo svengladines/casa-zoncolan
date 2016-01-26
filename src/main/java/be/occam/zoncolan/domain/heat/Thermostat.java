@@ -1,18 +1,23 @@
 package be.occam.zoncolan.domain.heat;
 
-import static be.occam.utils.spring.web.Client.postMultiPart;
+import static be.occam.utils.spring.web.Client.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+
+import be.occam.zoncolan.domain.heat.honeywell.AccessToken;
 
 public class Thermostat {
 	
@@ -53,14 +58,20 @@ public class Thermostat {
     
     protected final String passWord;
     
+    protected AccessToken accessToken;
+    
+    protected final ObjectMapper objectMapper;
+    
+    
     public Thermostat( String userName, String passWord ) {
     	
     	this.userName = userName;
     	this.passWord = passWord;
+    	this.objectMapper = new ObjectMapper();
     	
     }
 	
-	public void connect() {
+	public Thermostat connect() {
 		
 		String url
 			= new StringBuilder("https://").append( this.host ).append( this.tokenPath ).toString();
@@ -76,8 +87,22 @@ public class Thermostat {
 			
 			URI uri 
 				= loginResponse.getHeaders().getLocation();
-			
-			logger.info( "login response location header: {} ", uri.toString() );
+
+			if ( uri != null ) {
+				logger.info( "login response location header: {} ", uri.toString() );
+			}	
+			else {
+				
+				String responseJSON
+					= loginResponse.getBody();
+				
+				logger.info( "json = [{}]", responseJSON );
+				
+				this.accessToken = this.objectMapper.reader( AccessToken.class ).readValue( responseJSON );
+				
+				logger.info( "access_token = [{}]", this.accessToken );
+				
+			}
 		}
 		catch ( HttpClientErrorException e) {
 			try {
@@ -87,7 +112,53 @@ public class Thermostat {
 			}
 			catch( UnsupportedEncodingException ignore ) {}
 			
+		} catch (JsonProcessingException e) {
+			logger.warn( "could not parse JSON response", e );
+		} catch (IOException e) {
+			logger.warn( "could not process JSON response", e );
 		} 
+		
+		return this;
+		
+	}
+	
+	public Thermostat account() {
+		
+		String url
+			= new StringBuilder("https://").append( this.host ).append( this.basePath ).append( "userAccount" ).toString();
+		
+		
+		try {
+		
+			ResponseEntity<String> getResponse
+				= getJSON( url, String.class, this.headers() );
+			
+			logger.info( "account GET response code: {} ", getResponse.getStatusCode() );
+			logger.info( "account GET response body: {} ", getResponse.getBody() );
+			
+			String responseJSON
+					= getResponse.getBody();
+				
+			logger.info( "json = [{}]", responseJSON );
+			
+		}
+		catch ( HttpClientErrorException e) {
+			try {
+				String x 
+					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
+				logger.info( new String( x ) );
+			}
+			catch( UnsupportedEncodingException ignore ) {}
+		}
+		/*
+		} catch (JsonProcessingException e) {
+			logger.warn( "could not parse JSON response", e );
+		} catch (IOException e) {
+			logger.warn( "could not process JSON response", e );
+		} 
+		*/
+		
+		return this;
 		
 	}
 	
@@ -100,7 +171,13 @@ public class Thermostat {
 	    headers.put("Content-Type", "application/x-www-form-urlencoded");
 	    headers.put("Accept", "application/json");
 	    headers.put("applicationId", this.appID );
-	    headers.put("Authorization", "Basic MmZmMTUwYjQtYTM4NS00MGQ1LTg4OTktNWM2ZDg4ZDJjYmMyOjZGODhCOTgwLUI5OTUtNDUxRC04RTJBLTY2REMyQkNCRDU3MQ==" );
+	    
+	    if ( this.accessToken == null ) { 
+	    	headers.put("Authorization", "Basic MmZmMTUwYjQtYTM4NS00MGQ1LTg4OTktNWM2ZDg4ZDJjYmMyOjZGODhCOTgwLUI5OTUtNDUxRC04RTJBLTY2REMyQkNCRDU3MQ==" );
+	    }
+	    else {
+	    	headers.put("Authorization", String.format( "bearer %s", this.accessToken.getAccessToken() ) );
+	    }
 
 		return headers;
 		
