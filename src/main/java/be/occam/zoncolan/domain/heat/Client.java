@@ -20,8 +20,11 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import be.occam.zoncolan.domain.heat.honeywell.AccessToken;
 import be.occam.zoncolan.domain.heat.honeywell.Account;
+import be.occam.zoncolan.domain.heat.honeywell.Location;
+import be.occam.zoncolan.domain.heat.honeywell.LocationStatus;
+import be.occam.zoncolan.domain.heat.honeywell.Locations;
 
-public class Thermostat {
+public class Client {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
@@ -64,18 +67,21 @@ public class Thermostat {
     
     protected Account account;
     
+    protected Locations locations;
+    
     protected final ObjectMapper objectMapper;
     
     
-    public Thermostat( String userName, String passWord ) {
+    public Client( String userName, String passWord ) {
     	
     	this.userName = userName;
     	this.passWord = passWord;
     	this.objectMapper = new ObjectMapper();
+    	this.objectMapper.configure( org.codehaus.jackson.map.DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false );
     	
     }
 	
-	public Thermostat connect() {
+	public Client connect() {
 		
 		String url
 			= new StringBuilder("https://").append( this.host ).append( this.tokenPath ).toString();
@@ -126,7 +132,7 @@ public class Thermostat {
 		
 	}
 	
-	public Thermostat account() {
+	public Client account() {
 		
 		String url
 			= new StringBuilder("https://").append( this.host ).append( this.basePath ).append( "/userAccount" ).toString();
@@ -167,10 +173,56 @@ public class Thermostat {
 		
 	}
 	
-	public Thermostat locations() {
+	public Locations locations() {
 		
 		String url
 			= new StringBuilder("https://").append( this.host ).append( this.basePath ).append( "/location/installationInfo?userId={userId}&includeTemperatureControlSystems=True" ).toString();
+		
+		try {
+		
+			ResponseEntity<String> getResponse
+				= getJSON( url, String.class, this.headers(), this.account.getUserId() );
+			
+			logger.info( "account GET response code: {} ", getResponse.getStatusCode() );
+			logger.info( "account GET response body: {} ", getResponse.getBody() );
+			
+			String responseJSON
+					= getResponse.getBody();
+				
+			logger.info( "json = [{}]", responseJSON );
+			
+			Location[] locations = this.objectMapper.reader( Location[].class ).readValue( responseJSON );
+			
+			this.locations 
+				= new Locations( this, locations );
+			
+			return this.locations;
+			
+		}
+		catch ( HttpClientErrorException e) {
+			try {
+				String x 
+					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
+				logger.info( new String( x ) );
+			}
+			catch( UnsupportedEncodingException ignore ) {}
+		} catch (JsonProcessingException e) {
+			logger.warn( "could not parse JSON response", e );
+		} catch (IOException e) {
+			logger.warn( "could not process JSON response", e );
+		} 
+		
+		return null;
+		
+	}
+	
+	public Client location( ) {
+		
+		String id
+			= this.locations.first().getLocationInfo().getLocationId();
+		
+		String url
+			= new StringBuilder("https://").append( this.host ).append( this.basePath ).append( "/location/" ).append( id ).append("/installationInfo" ).toString();
 		
 		try {
 		
@@ -225,6 +277,60 @@ public class Thermostat {
 	    }
 
 		return headers;
+		
+	}
+	
+	public StringBuilder basePath() {
+		
+		StringBuilder b
+			= new StringBuilder("https://")
+				.append( this.host )
+				.append( this.basePath );
+
+		return b;
+		
+	}
+	
+	public LocationStatus getLocationStatus( String locationId ) {
+		
+		String url
+			= this.basePath().append("/location/{locationId}/status").toString();
+		
+		try {
+		
+			ResponseEntity<String> getResponse
+				= getJSON( url, String.class, this.headers(), locationId );
+			
+			logger.info( "location.status GET response code: {} ", getResponse.getStatusCode() );
+			logger.info( "location.status GET response body: {} ", getResponse.getBody() );
+			
+			String responseJSON
+					= getResponse.getBody();
+				
+			logger.info( "json = [{}]", responseJSON );
+			
+			// Location[] locations = this.objectMapper.reader( Location[].class ).readValue( responseJSON );
+			
+			// this.locations 
+			//	= new Locations( this, locations );
+			
+			return null;
+			
+		}
+		catch ( HttpClientErrorException e) {
+			try {
+				String x 
+					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
+				logger.info( new String( x ) );
+			}
+			catch( UnsupportedEncodingException ignore ) {}
+		} /* catch (JsonProcessingException e) {
+			logger.warn( "could not parse JSON response", e );
+		} catch (IOException e) {
+			logger.warn( "could not process JSON response", e );
+		} */
+		
+		return null;
 		
 	}
 	

@@ -1,0 +1,38 @@
+package be.occam.zoncolan.domain.heat.honeywell;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import be.occam.zoncolan.domain.heat.Client;
+
+public class TemperatureControlSystem {
+	
+	protected Client client;
+	protected String systemId;
+	protected List<Zone> zones;
+	
+	public TemperatureControlSystem() {
+		this.zones = new ArrayList<Zone>();
+	}
+
+	public String getSystemId() {
+		return systemId;
+	}
+
+	public TemperatureControlSystem setSystemId( String systemId ) {
+		this.systemId = systemId;
+		return this;
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public TemperatureControlSystem setClient(Client client) {
+		this.client = client;
+		return this;
+	}
+	
+	
+
+}

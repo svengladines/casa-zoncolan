@@ -2,8 +2,6 @@ package be.occam.zoncolan.domain.heat.honeywell;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import be.occam.zoncolan.domain.heat.Client;
-
 /**
  * "userId": "1175639",
   "username": "sven.gladines@telenet.be",
@@ -17,9 +15,8 @@ import be.occam.zoncolan.domain.heat.Client;
  * @author sven
  *
  */
-public class Account {
+public class Zone {
 	
-	protected Client client;
 	protected String userId;
 	protected String userName;
 	protected String firstName;
@@ -74,15 +71,8 @@ public class Account {
 	public String getLanguage() {
 		return language;
 	}
-
-	public Client getClient() {
-		return client;
-	}
-
-	public Account setClient(Client client) {
-		this.client = client;
-		return this;
-	}
+	
+	
 	
 
 }

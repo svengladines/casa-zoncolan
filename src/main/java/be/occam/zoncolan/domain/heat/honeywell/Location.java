@@ -1,78 +1,55 @@
 package be.occam.zoncolan.domain.heat.honeywell;
 
+import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import be.occam.zoncolan.domain.heat.Client;
 
 /**
- * "userId": "1175639",
-  "username": "sven.gladines@telenet.be",
-  "firstname": "Sven",
-  "lastname": "Gladines",
-  "streetAddress": "Vertrijksestraat",
-  "city": "Neervelp",
-  "postcode": "3370",
-  "country": "Belgium",
-  "language": "nlNL"
  * @author sven
  *
  */
 public class Location {
 	
-	protected String userId;
-	protected String userName;
-	protected String firstName;
-	protected String lastName;
-	protected String streetAddress;
-	protected String city;
-	protected String postCode;
-	protected String country;
-	protected String language;
-
-	@JsonProperty(value="userId")
-	public String getUserId() {
-		return this.userId;
-	}
-
-	@JsonProperty(value="username")
-	public String getUserName() {
-		return userName;
-	}
-
-	@JsonProperty(value="firstname")
-	public String getFirstName() {
-		return firstName;
-	}
-
-	@JsonProperty(value="lastname")
-	public String getLastName() {
-		return lastName;
-	}
-
-	@JsonProperty(value="streetAddress")
-	public String getStreetAddress() {
-		return streetAddress;
-	}
-
-	@JsonProperty(value="city")
-	public String getCity() {
-		return city;
-	}
-
-	@JsonProperty(value="postcode")
-	public String getPostCode() {
-		return postCode;
-	}
-
-	@JsonProperty(value="country")
-	public String getCountry() {
-		return country;
-	}
-
-	@JsonProperty(value="language")
-	public String getLanguage() {
-		return language;
+	protected final Logger logger
+		= LoggerFactory.getLogger( this.getClass() );
+	
+	protected Client client;
+	protected List<GateWay> gateWays;
+	protected LocationInfo locationInfo;
+	
+	@JsonIgnore
+	protected LocationStatus status;
+	
+	public Location() {
+		
 	}
 	
-	
-	
+	public Client getClient() {
+		return client;
+	}
 
+	public Location setClient(Client client) {
+		this.client = client;
+		return this;
+	}
+	
+	@JsonProperty(value="gateways")
+	public List<GateWay> gateWays() {
+		return this.gateWays;
+	}
+
+	@JsonProperty(value="locationInfo")
+	public LocationInfo getLocationInfo() {
+		return locationInfo;
+	}
+
+	public LocationStatus getStatus() {
+		return this.client.getLocationStatus( this.locationInfo.getLocationId() );
+	}
+	
 }
