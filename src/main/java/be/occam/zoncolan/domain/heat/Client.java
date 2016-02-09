@@ -294,7 +294,7 @@ public class Client {
 	public LocationStatus getLocationStatus( String locationId ) {
 		
 		String url
-			= this.basePath().append("/location/{locationId}/status").toString();
+			= this.basePath().append("/location/{locationId}/status?includeTemperatureControlSystems=True").toString();
 		
 		try {
 		
@@ -309,12 +309,10 @@ public class Client {
 				
 			logger.info( "json = [{}]", responseJSON );
 			
-			// Location[] locations = this.objectMapper.reader( Location[].class ).readValue( responseJSON );
+			LocationStatus locationStatus 
+				= this.objectMapper.reader( LocationStatus.class ).readValue( responseJSON );
 			
-			// this.locations 
-			//	= new Locations( this, locations );
-			
-			return null;
+			return locationStatus;
 			
 		}
 		catch ( HttpClientErrorException e) {
@@ -324,11 +322,11 @@ public class Client {
 				logger.info( new String( x ) );
 			}
 			catch( UnsupportedEncodingException ignore ) {}
-		} /* catch (JsonProcessingException e) {
+		} catch (JsonProcessingException e) {
 			logger.warn( "could not parse JSON response", e );
 		} catch (IOException e) {
 			logger.warn( "could not process JSON response", e );
-		} */
+		}
 		
 		return null;
 		

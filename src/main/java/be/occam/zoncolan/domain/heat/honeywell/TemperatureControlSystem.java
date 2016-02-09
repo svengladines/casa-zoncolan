@@ -32,7 +32,9 @@ public class TemperatureControlSystem {
 		this.client = client;
 		return this;
 	}
-	
-	
 
+	public List<Zone> getZones() {
+		return zones;
+	}
+	
 }
