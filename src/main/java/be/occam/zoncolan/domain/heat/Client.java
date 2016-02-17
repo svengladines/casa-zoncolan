@@ -59,9 +59,9 @@ public class Client {
     protected final String passWordField
 		= "password";
     
-    protected final String userName;
+    protected String userName;
     
-    protected final String passWord;
+    protected String passWord;
     
     protected AccessToken accessToken;
     
@@ -71,14 +71,24 @@ public class Client {
     
     protected final ObjectMapper objectMapper;
     
-    
-    public Client( String userName, String passWord ) {
+    public Client( ) {
     	
-    	this.userName = userName;
-    	this.passWord = passWord;
     	this.objectMapper = new ObjectMapper();
     	this.objectMapper.configure( org.codehaus.jackson.map.DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false );
     	
+    }
+    
+    public Client( String userName, String passWord ) {
+
+    	this();
+    	this.userName = userName;
+    	this.passWord = passWord;
+    	
+    }
+    
+    public Client setUserName( String userName ) {
+    	this.userName = userName;
+    	return this;
     }
 	
 	public Client connect() {
