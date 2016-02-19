@@ -15,7 +15,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import be.occam.zoncolan.domain.heat.Client;
-import be.occam.zoncolan.domain.heat.ThermostatNoGit;
 import be.occam.zoncolan.domain.heat.honeywell.LocationStatus;
 import be.occam.zoncolan.domain.people.MailMan;
 import be.occam.zoncolan.web.dto.ThermostatStatusDTO;
@@ -48,7 +47,7 @@ public class PullAndPublishTemperatureScenario extends Scenario {
 			= client.connect().account().locations().first().getStatus();
 	
 		Logger logger
-			= LoggerFactory.getLogger( ThermostatNoGit.class );
+			= LoggerFactory.getLogger( this.getClass() );
 		
 		logger.info( "status : [{}]", status );
 		
@@ -66,7 +65,7 @@ public class PullAndPublishTemperatureScenario extends Scenario {
 			= new ThermostatStatusDTO().setCurrentTemperature( currentTemperature ).setTargetTemperature(  targetTemperature );
 		
 		MimeMessage message
-			= this.formatThermostateOffMessage( "katrien.belmans@gmail.com", dto );
+			= this.formatThermostateOffMessage( "/templates/thermostat-status.tmpl", dto, "sven.gladines@gmail.com", "katrien.belmans@gmail.com" );
 
 		if ( message != null ) {
 			
@@ -86,13 +85,7 @@ public class PullAndPublishTemperatureScenario extends Scenario {
 		return this;
 	}
 	
-	protected MimeMessage formatThermostateOffMessage( String recipient, ThermostatStatusDTO status ) {
-		
-		String templateString
-			= "/templates/thermostat-off.tmpl";
-		
-		String to
-			= recipient;
+	protected MimeMessage formatThermostateOffMessage( String templateID, ThermostatStatusDTO status, String... recipients ) {
 		
 		MimeMessage message
 			= null;
@@ -103,14 +96,15 @@ public class PullAndPublishTemperatureScenario extends Scenario {
 		try {
 			
 			InputStream tis
-				= this.getClass().getResourceAsStream( templateString );
+				= this.getClass().getResourceAsStream( templateID );
 			
 			Template template 
-				= new Template( templateString, new InputStreamReader( tis ), cfg );
+				= new Template( templateID, new InputStreamReader( tis ), cfg );
 			
 			Map<String, Object> model = new HashMap<String, Object>();
 					
 			model.put( "status", status );
+			model.put( "sx", ( status.getTargetTemperature() > status.getCurrentTemperature() ) ? "aan" : "af" );
 			
 			StringWriter bodyWriter 
 				= new StringWriter();
@@ -123,8 +117,8 @@ public class PullAndPublishTemperatureScenario extends Scenario {
 			// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
 			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_NO, "utf-8");
 				
-			helper.setFrom( "casa-zoncolan-no-reply@gmail.com" );
-			helper.setTo( to );
+			helper.setFrom( "sven.gladines@gmail.com" );
+			helper.setTo( recipients );
 			helper.setSubject( "Casa Zoncolan verwarmingsrapport" );
 				
 			String text

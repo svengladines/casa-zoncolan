@@ -8,8 +8,8 @@
   	<name>casa-zoncolan-backend</name>
   	<description>casa-zoncolan-backend</description>
 	<parent>
-		<artifactId>occam-parent-pom</artifactId>
-		<groupId>be.occam</groupId>
+		<artifactId>colloseum-parent-pom</artifactId>
+		<groupId>be.occam.colloseum</groupId>
 		<version>1.0-LATEST-SNAPSHOT</version>
 	</parent>
 	

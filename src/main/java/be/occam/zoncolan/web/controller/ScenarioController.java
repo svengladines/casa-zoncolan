@@ -30,7 +30,7 @@ public class ScenarioController {
 	
 	@RequestMapping( method = { RequestMethod.GET } )
 	@ResponseBody
-	public ResponseEntity<Boolean> get( 
+	public ResponseEntity<String> get( 
 			@PathVariable("id") String id, 
 			@RequestParam(required=false) String x,
 			@RequestParam(required=false) String y ) {
@@ -41,16 +41,16 @@ public class ScenarioController {
 				
 				this.pullAndPublishTemperatureScenario.execute( x, y );
 				
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return response( "success" , HttpStatus.OK );
 			}
 			else {
-				return response( Boolean.FALSE, HttpStatus.NOT_FOUND );
+				return response( String.format( "scenario [%] not supported", id ), HttpStatus.NOT_FOUND );
 			}
 			
 		}
 		catch( Exception e ) {
 			logger.warn( "scenario execution failed", e );
-			return response( Boolean.FALSE, HttpStatus.INTERNAL_SERVER_ERROR );
+			return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
 		}
 			
 	}
