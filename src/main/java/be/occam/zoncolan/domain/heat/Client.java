@@ -90,6 +90,11 @@ public class Client {
     	this.userName = userName;
     	return this;
     }
+    
+    public Client setPassWord( String passWord ) {
+    	this.passWord = passWord;
+    	return this;
+    }
 	
 	public Client connect() {
 		

@@ -3,7 +3,7 @@ package be.occam.zoncolan.web.dto;
 public class ThermostatStatusDTO {
 	
 	protected Float currentTemperature;
-	protected Float targetTemperature;
+	protected Double targetTemperature;
 	
 	public Float getCurrentTemperature() {
 		return currentTemperature;
@@ -14,11 +14,11 @@ public class ThermostatStatusDTO {
 		return this;
 	}
 	
-	public Float getTargetTemperature() {
+	public Double getTargetTemperature() {
 		return targetTemperature;
 	}
 	
-	public ThermostatStatusDTO setTargetTemperature( Float targetTemperature ) {
+	public ThermostatStatusDTO setTargetTemperature( Double targetTemperature ) {
 		this.targetTemperature = targetTemperature;
 		return this;
 	}

@@ -7,12 +7,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.ftp.FTPClient;
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.occam.zoncolan.domain.heat.Client;
+import be.occam.zoncolan.domain.people.MailMan;
 import be.occam.zoncolan.domain.scenario.PullAndPublishTemperatureScenario;
+import be.occam.zoncolan.web.util.DataGuard;
+import be.occam.zoncolan.web.util.NoopGuard;
 
 @Configuration
 @EnableTransactionManagement
@@ -45,7 +50,7 @@ public class CasaZoncolanApplicationConfig {
 	}
 	
 	@Configuration
-	public static class BeansConfig {
+	public static class BeansConfigShared {
 		
 		@Bean
 		public FTPClient ftpClient() {
@@ -62,11 +67,32 @@ public class CasaZoncolanApplicationConfig {
 			return new Client();
 		}
 		
+		@Bean
+		public MailMan mailMan() {
+			return new MailMan();
+		}
+		
+		@Bean
+		public JavaMailSender javaMailSender () {
+			
+			JavaMailSenderImpl sender
+				= new JavaMailSenderImpl();
+			return sender;
+			
+		}
+		
 	}
 	
 	@Configuration
 	@Profile({ConfigurationProfiles.PRODUCTION})
-	static class ConfigForProduction {
+	static class DomainConfigForProduction {
+		
+		@Bean
+		DataGuard dataGuard() {
+			
+			return new NoopGuard();
+			
+		}
 	
 	}
 	

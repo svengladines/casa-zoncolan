@@ -1,38 +1,147 @@
 package be.occam.zoncolan.domain.scenario;
 
-import javax.annotation.Resource;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
-import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
-import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.repositories.OrganisatieRepository;
-import be.pirlewiet.registrations.web.util.DataGuard;
+import javax.annotation.Resource;
+import javax.mail.internet.MimeMessage;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+
+import be.occam.zoncolan.domain.heat.Client;
+import be.occam.zoncolan.domain.heat.ThermostatNoGit;
+import be.occam.zoncolan.domain.heat.honeywell.LocationStatus;
+import be.occam.zoncolan.domain.people.MailMan;
+import be.occam.zoncolan.web.dto.ThermostatStatusDTO;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 public class PullAndPublishTemperatureScenario extends Scenario {
 	
-	@Resource
-	OrganisatieRepository organisatieRepository;
+	protected final Logger logger
+		= LoggerFactory.getLogger( this.getClass() );
 	
 	@Resource
-	SecretariaatsMedewerker secretariaatsMedewerker;
+	protected Client client;
 	
 	@Resource
-	DataGuard dataGuard;
+	protected MailMan mailMan;
 	
-	public PullAndPublishTemperatureScenario guard() {
-    	this.dataGuard.guard();
-    	return this;
-    }
+	@Resource
+	protected JavaMailSender javaMailSender;
 
+	
 	@Override
 	public void execute( String... parameters ) {
 		
-		Organisatie organisation 
-			= this.organisatieRepository.findOneByEmail( parameters[ 0 ] );
+		// PULL
+		this.client.setUserName( parameters[ 0 ] );
+		this.client.setPassWord( parameters[ 1 ] );
 		
-		this.secretariaatsMedewerker.sendInitialCode( organisation );
+		LocationStatus status 
+			= client.connect().account().locations().first().getStatus();
+	
+		Logger logger
+			= LoggerFactory.getLogger( ThermostatNoGit.class );
+		
+		logger.info( "status : [{}]", status );
+		
+		logger.info( "gateways : [{}]", status.gateWays() );
+		
+		Float currentTemperature
+			= status.gateWays().get( 0 ).temperatureControlSystems().get( 0 ).getZones().get( 0 ).getTemperatureStatus().getTemperature();
+		
+		Double targetTemperature
+			= status.gateWays().get( 0 ).temperatureControlSystems().get( 0 ).getZones().get( 0 ).getSetPointStatus().getTargetHeatTemperature();
+		
+		logger.info( "current temperature is [{}], target temperature is [{}]", currentTemperature, targetTemperature );
+		
+		ThermostatStatusDTO dto
+			= new ThermostatStatusDTO().setCurrentTemperature( currentTemperature ).setTargetTemperature(  targetTemperature );
+		
+		MimeMessage message
+			= this.formatThermostateOffMessage( "katrien.belmans@gmail.com", dto );
+
+		if ( message != null ) {
 			
+			mailMan.deliver( message );
+			
+		}
+		
 	}
 	
+	public PullAndPublishTemperatureScenario setUserName( String userName ) {
+		this.client.setUserName( userName );
+		return this;
+	}
 	
-
+	public PullAndPublishTemperatureScenario setPassWord( String passWord ) {
+		this.client.setPassWord( passWord );
+		return this;
+	}
+	
+	protected MimeMessage formatThermostateOffMessage( String recipient, ThermostatStatusDTO status ) {
+		
+		String templateString
+			= "/templates/thermostat-off.tmpl";
+		
+		String to
+			= recipient;
+		
+		MimeMessage message
+			= null;
+			
+		Configuration cfg 
+			= new Configuration();
+		
+		try {
+			
+			InputStream tis
+				= this.getClass().getResourceAsStream( templateString );
+			
+			Template template 
+				= new Template( templateString, new InputStreamReader( tis ), cfg );
+			
+			Map<String, Object> model = new HashMap<String, Object>();
+					
+			model.put( "status", status );
+			
+			StringWriter bodyWriter 
+				= new StringWriter();
+			
+			template.process( model , bodyWriter );
+			
+			bodyWriter.flush();
+				
+			message = this.javaMailSender.createMimeMessage( );
+			// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
+			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_NO, "utf-8");
+				
+			helper.setFrom( "casa-zoncolan-no-reply@gmail.com" );
+			helper.setTo( to );
+			helper.setSubject( "Casa Zoncolan verwarmingsrapport" );
+				
+			String text
+				= bodyWriter.toString();
+				
+			logger.info( "email text is [{}]", text );
+				
+			helper.setText(text, true);
+			
+		}
+		catch( Exception e ) {
+			logger.warn( "could not create e-mail", e );
+			throw new RuntimeException( e );
+		}
+		
+		return message;
+    	
+    }
+	
 }
