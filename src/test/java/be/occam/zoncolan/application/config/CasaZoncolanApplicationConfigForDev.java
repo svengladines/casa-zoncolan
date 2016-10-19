@@ -8,7 +8,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.apphosting.api.ApiProxy;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
-import be.occam.zoncolan.web.util.DataGuard;
+import be.occam.zoncolan.heat.web.util.DataGuard;
 import be.occam.zoncolan.web.util.DevGuard;
 
 @Configuration

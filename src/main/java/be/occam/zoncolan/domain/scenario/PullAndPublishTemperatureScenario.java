@@ -3,6 +3,7 @@ package be.occam.zoncolan.domain.scenario;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-import be.occam.zoncolan.domain.heat.Client;
-import be.occam.zoncolan.domain.heat.honeywell.LocationStatus;
 import be.occam.zoncolan.domain.people.MailMan;
-import be.occam.zoncolan.web.dto.ThermostatStatusDTO;
+import be.occam.zoncolan.heat.domain.honeywell.Client;
+import be.occam.zoncolan.heat.domain.honeywell.LocationStatus;
+import be.occam.zoncolan.heat.web.dto.ThermostatDTO;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -44,7 +45,7 @@ public class PullAndPublishTemperatureScenario extends Scenario {
 		this.client.setPassWord( parameters[ 1 ] );
 		
 		LocationStatus status 
-			= client.connect().account().locations().first().getStatus();
+			= client.connect().account().locations().first().fetchStatus();
 	
 		Logger logger
 			= LoggerFactory.getLogger( this.getClass() );
@@ -61,8 +62,8 @@ public class PullAndPublishTemperatureScenario extends Scenario {
 		
 		logger.info( "current temperature is [{}], target temperature is [{}]", currentTemperature, targetTemperature );
 		
-		ThermostatStatusDTO dto
-			= new ThermostatStatusDTO().setCurrentTemperature( currentTemperature ).setTargetTemperature(  targetTemperature );
+		ThermostatDTO dto
+			= new ThermostatDTO().setCurrentTemperature( currentTemperature ).setTargetTemperature( toFloat( targetTemperature) );
 		
 		MimeMessage message
 			= this.formatThermostateOffMessage( "/templates/thermostat-status.tmpl", dto, "sven.gladines@gmail.com", "katrien.belmans@gmail.com" );
@@ -85,7 +86,7 @@ public class PullAndPublishTemperatureScenario extends Scenario {
 		return this;
 	}
 	
-	protected MimeMessage formatThermostateOffMessage( String templateID, ThermostatStatusDTO status, String... recipients ) {
+	protected MimeMessage formatThermostateOffMessage( String templateID, ThermostatDTO status, String... recipients ) {
 		
 		MimeMessage message
 			= null;
@@ -137,5 +138,16 @@ public class PullAndPublishTemperatureScenario extends Scenario {
 		return message;
     	
     }
+	
+	protected Float toFloat( Double d ) {
+		
+		try {
+			return new DecimalFormat("#").parse( d.toString() ).floatValue();
+		}
+		catch( Exception e ) {
+			throw new RuntimeException(e );
+		}
+		
+	}
 	
 }

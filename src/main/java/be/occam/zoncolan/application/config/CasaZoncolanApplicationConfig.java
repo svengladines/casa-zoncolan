@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.ftp.FTPClient;
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
-import be.occam.zoncolan.domain.heat.Client;
 import be.occam.zoncolan.domain.people.MailMan;
 import be.occam.zoncolan.domain.scenario.PullAndPublishTemperatureScenario;
-import be.occam.zoncolan.web.util.DataGuard;
-import be.occam.zoncolan.web.util.NoopGuard;
+import be.occam.zoncolan.heat.domain.honeywell.Client;
+import be.occam.zoncolan.heat.web.util.DataGuard;
+import be.occam.zoncolan.heat.web.util.NoopGuard;
 
 @Configuration
 @EnableTransactionManagement
