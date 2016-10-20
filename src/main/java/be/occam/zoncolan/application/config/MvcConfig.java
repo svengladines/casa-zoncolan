@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import be.occam.zoncolan.heat.web.controller.ScenarioController;
+import be.occam.zoncolan.heat.web.controller.ThermostatController;
 
 @Configuration
 @EnableWebMvc
@@ -46,6 +47,13 @@ public class MvcConfig {
 		public ScenarioController scenarioController() {
 			
 			return new ScenarioController();
+			
+		}
+		
+		@Bean
+		public ThermostatController thermostatController() {
+			
+			return new ThermostatController();
 			
 		}
 		

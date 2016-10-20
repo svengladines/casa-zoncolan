@@ -1,9 +1,10 @@
 package be.occam.zoncolan.heat.domain.honeywell;
 
-import static be.occam.utils.spring.web.Client.getJSON;
+import static be.occam.utils.spring.web.Client.*;
 import static be.occam.utils.spring.web.Client.postMultiPart;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+
+import be.occam.zoncolan.heat.domain.honeywell.SetPointStatus.SetPointMode;
 
 
 public class Client {
@@ -323,6 +326,136 @@ public class Client {
 				= this.objectMapper.reader( LocationStatus.class ).readValue( responseJSON );
 			
 			return locationStatus;
+			
+		}
+		catch ( HttpClientErrorException e) {
+			try {
+				String x 
+					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
+				logger.info( new String( x ) );
+			}
+			catch( UnsupportedEncodingException ignore ) {}
+		} catch (JsonProcessingException e) {
+			logger.warn( "could not parse JSON response", e );
+		} catch (IOException e) {
+			logger.warn( "could not process JSON response", e );
+		}
+		
+		return null;
+		
+	}
+	
+	public SetPointStatus putZone( String zoneID, Zone zone ) {
+		
+		String url
+			= this.basePath().append("/temperatureZone/{zoneId}/heatSetpoint").toString();
+		
+		try {
+			
+			StringWriter sw
+				= new StringWriter();
+			
+			String json
+				// = sw.toString();
+				= "{\"heatSetpointValue\": 5.5,\"setpointMode\": \"PermanentOverride\"}";
+		
+			ResponseEntity<String> getResponse
+				= putJSON( url, json, this.headers(), zoneID );
+			
+			logger.info( "zone PUT response code: {} ", getResponse.getStatusCode() );
+			logger.info( "zone PUT response body: {} ", getResponse.getBody() );
+			
+			String responseJSON
+					= getResponse.getBody();
+				
+			logger.info( "json = [{}]", responseJSON );
+			
+			SetPointStatus locationStatus 
+				= this.objectMapper.reader( SetPointStatus.class ).readValue( responseJSON );
+			
+			return locationStatus;
+			
+		}
+		catch ( HttpClientErrorException e) {
+			try {
+				String x 
+					= new String( e.getResponseBodyAsByteArray(), "utf-16" );
+				logger.info( new String( x ) );
+			}
+			catch( UnsupportedEncodingException ignore ) {}
+		} catch (JsonProcessingException e) {
+			logger.warn( "could not parse JSON response", e );
+		} catch (IOException e) {
+			logger.warn( "could not process JSON response", e );
+		}
+		
+		return null;
+		
+	}
+	
+	public Zone getZone( String zoneID ) {
+		
+		String url
+			= this.basePath().append("/temperatureZone/{zoneId}/status").toString();
+		
+		try {
+			
+			ResponseEntity<String> getResponse
+				= getJSON( url, String.class, this.headers(), zoneID );
+			
+			logger.info( "location.status GET response code: {} ", getResponse.getStatusCode() );
+			logger.info( "location.status GET response body: {} ", getResponse.getBody() );
+			
+			String responseJSON
+					= getResponse.getBody();
+				
+			logger.info( "json = [{}]", responseJSON );
+			
+			Zone zone 
+				= this.objectMapper.reader( Zone.class ).readValue( responseJSON );
+			
+			return zone;
+			
+		}
+		catch ( HttpClientErrorException e) {
+			try {
+				String x 
+					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
+				logger.info( new String( x ) );
+			}
+			catch( UnsupportedEncodingException ignore ) {}
+		} catch (JsonProcessingException e) {
+			logger.warn( "could not parse JSON response", e );
+		} catch (IOException e) {
+			logger.warn( "could not process JSON response", e );
+		}
+		
+		return null;
+		
+	}
+	
+	public Schedule getZoneSchedule( String zoneId ) {
+		
+		String url
+			= this.basePath().append("/temperatureZone/{zoneId}/schedule").toString();
+		
+		try {
+		
+			ResponseEntity<String> getResponse
+				= getJSON( url, String.class, this.headers(), zoneId );
+			
+			logger.info( "zone.schedule GET response code: {} ", getResponse.getStatusCode() );
+			logger.info( "zone.schedule GET response body: {} ", getResponse.getBody() );
+			
+			String responseJSON
+					= getResponse.getBody();
+				
+			logger.info( "json = [{}]", responseJSON );
+			
+			Schedule schedule 
+				= this.objectMapper.reader( Schedule.class ).readValue( responseJSON );
+			
+			return schedule;
 			
 		}
 		catch ( HttpClientErrorException e) {

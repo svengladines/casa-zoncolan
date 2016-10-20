@@ -16,6 +16,9 @@ import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.occam.zoncolan.domain.people.MailMan;
 import be.occam.zoncolan.domain.scenario.PullAndPublishTemperatureScenario;
 import be.occam.zoncolan.heat.domain.honeywell.Client;
+import be.occam.zoncolan.heat.domain.honeywell.HeatManForHoneyWell;
+import be.occam.zoncolan.heat.domain.people.HeatMan;
+import be.occam.zoncolan.heat.domain.service.ThermostatService;
 import be.occam.zoncolan.heat.web.util.DataGuard;
 import be.occam.zoncolan.heat.web.util.NoopGuard;
 
@@ -63,6 +66,11 @@ public class CasaZoncolanApplicationConfig {
 		}
 		
 		@Bean
+		public ThermostatService thermostatService() {
+			return new ThermostatService();
+		}
+		
+		@Bean
 		Client client() {
 			return new Client();
 		}
@@ -79,6 +87,11 @@ public class CasaZoncolanApplicationConfig {
 				= new JavaMailSenderImpl();
 			return sender;
 			
+		}
+		
+		@Bean
+		public HeatMan heatMan() {
+			return new HeatManForHoneyWell();
 		}
 		
 	}

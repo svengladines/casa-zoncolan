@@ -31,5 +31,13 @@ public class SetPointStatus {
 	public SetPointMode getSetPointMode() {
 		return this.setPointMode;
 	}
+
+	public void setTargetHeatTemperature(Double targetHeatTemperature) {
+		this.targetHeatTemperature = targetHeatTemperature;
+	}
+
+	public void setSetPointMode(SetPointMode setPointMode) {
+		this.setPointMode = setPointMode;
+	}
 	
 }
