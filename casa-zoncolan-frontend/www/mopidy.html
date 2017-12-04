@@ -1,0 +1,111 @@
+<html>
+
+<head>
+
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+ <script type="text/javascript" src="http://pi.local:6680/mopidy/mopidy.js"></script>
+ <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+	<div id="playlists">
+		
+	</div>
+
+	<script>
+	var $jq = jQuery.noConflict();
+	
+	var trackDesc = function (track) {
+		    return track.name + " by " + track.artists[0].name + " from " + track.album.name;
+	};
+
+	var playLists = function() {
+
+	var lists = mopidy.playlists.getPlaylists().then( function( playlists ) {
+		
+		var lists = $jq("#playlists");
+	
+		for ( i in playlists ) {
+	
+			var playlist = playlists[i];
+			var list = $jq("<a/>").attr("href","javascript:void(0);").addClass("playlist").attr("data-playlist-uri", playlist.uri ).html( playlist.name );
+			lists.append( list );		
+
+		}
+
+		addListeners();
+
+	});	
+	
+	}
+
+	var clearTrackList = function() {
+
+		mopidy.tracklist.clear();
+
+	};
+
+	var addToTrackList = function( tracks ) {
+
+		mopidy.tracklist.add( tracks );
+
+	}
+
+	var playTrackList = function() {
+
+		mopidy.tracklist.setRepeat( false);
+		mopidy.tracklist.setConsume( true );
+		mopidy.tracklist.setSingle( false );
+		mopidy.tracklist.shuffle();
+		mopidy.playback.next();
+		mopidy.playback.play();		
+
+	}
+
+var queueAndPlay = function (playlistNum, trackNum) {
+    playlistNum = playlistNum || 0;
+    trackNum = trackNum || 0;
+    mopidy.playlists.getPlaylists().then(function (playlists) {
+        var playlist = playlists[playlistNum];
+        console.log("Loading playlist:", playlist.name);
+        return mopidy.tracklist.add(playlist.tracks).then(function (tlTracks) {
+            return mopidy.playback.play(tlTracks[trackNum]).then(function () {
+                return mopidy.playback.getCurrentTrack().then(function (track) {
+                    console.log("Now playing:", trackDesc(track));
+                });
+            });
+        });
+    })
+    .catch(console.error.bind(console)) // Handle errors here
+    .done();                            // ...or they'll be thrown here
+};
+
+var addListeners = function() {
+
+	$jq(".playlist").click( function() {
+		var uri = $jq(this).attr("data-playlist-uri");
+		var playList = mopidy.playlists.lookup( uri ).then( function( list ) {
+			var tracks = list.tracks;
+			clearTrackList();
+			addToTrackList( tracks );
+			playTrackList();
+		});
+	});
+
+}
+
+var mopidy = new Mopidy({
+    webSocketUrl: "ws://pi.local:6680/mopidy/ws/"
+});
+mopidy.on(console.log.bind(console));
+mopidy.on("state:online", playLists );
+</script>
+</body>
+
+</html>
