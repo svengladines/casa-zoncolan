@@ -7,14 +7,17 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
- <script type="text/javascript" src="http://pi.local:6680/mopidy/mopidy.js"></script>
+ <script type="text/javascript" src="http://192.168.0.112:6680/mopidy/mopidy.js"></script>
  <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
 
 </head>
 
 <body>
 
-	<div id="playlists">
+	<div>
+		Afspeellijsten
+		<ul id="playlists">
+		</ul>
 		
 	</div>
 
@@ -34,8 +37,10 @@
 		for ( i in playlists ) {
 	
 			var playlist = playlists[i];
-			var list = $jq("<a/>").attr("href","javascript:void(0);").addClass("playlist").attr("data-playlist-uri", playlist.uri ).html( playlist.name );
-			lists.append( list );		
+			var listRef = $jq("<a/>").attr("href","javascript:void(0);").addClass("playlist").attr("data-playlist-uri", playlist.uri ).html( playlist.name );
+			var listItem = $jq("<li/>");
+			listItem.append( listRef );
+			lists.append( listItem );		
 
 		}
 
@@ -101,7 +106,7 @@ var addListeners = function() {
 }
 
 var mopidy = new Mopidy({
-    webSocketUrl: "ws://pi.local:6680/mopidy/ws/"
+    webSocketUrl: "ws://192.168.0.112:6680/mopidy/ws/"
 });
 mopidy.on(console.log.bind(console));
 mopidy.on("state:online", playLists );
