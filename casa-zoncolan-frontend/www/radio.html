@@ -7,72 +7,29 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
- <script type="text/javascript" src="http://192.168.0.112:6680/mopidy/mopidy.js"></script>
- <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="http://192.168.0.112:6680/mopidy/mopidy.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="js/casa-zoncolan.js"></script>
+	<script type="text/javascript" src="js/radio.js"></script>
 
 </head>
 
 <body>
 
 	<div>
-		Afspeellijsten
+		<h1>Afspeellijsten</h1>
 		<ul id="playlists">
 		</ul>
+		
+		<div id="events">
+			
+		</div>
 		
 	</div>
 
 	<script>
 	var $jq = jQuery.noConflict();
 	
-	var trackDesc = function (track) {
-		    return track.name + " by " + track.artists[0].name + " from " + track.album.name;
-	};
-
-	var playLists = function() {
-
-	var lists = mopidy.playlists.getPlaylists().then( function( playlists ) {
-		
-		var lists = $jq("#playlists");
-	
-		for ( i in playlists ) {
-	
-			var playlist = playlists[i];
-			var listRef = $jq("<a/>").attr("href","javascript:void(0);").addClass("playlist").attr("data-playlist-uri", playlist.uri ).html( playlist.name );
-			var listItem = $jq("<li/>");
-			listItem.append( listRef );
-			lists.append( listItem );		
-
-		}
-
-		addListeners();
-
-	});	
-	
-	}
-
-	var clearTrackList = function() {
-
-		mopidy.tracklist.clear();
-
-	};
-
-	var addToTrackList = function( tracks ) {
-
-		mopidy.tracklist.add( tracks );
-
-	}
-
-	var playTrackList = function() {
-
-		mopidy.tracklist.setRepeat( false);
-		mopidy.tracklist.setConsume( true );
-		mopidy.tracklist.setSingle( false );
-		mopidy.tracklist.shuffle();
-		mopidy.playback.next();
-		mopidy.playback.play();		
-
-	}
-
 var queueAndPlay = function (playlistNum, trackNum) {
     playlistNum = playlistNum || 0;
     trackNum = trackNum || 0;
@@ -84,6 +41,7 @@ var queueAndPlay = function (playlistNum, trackNum) {
                 return mopidy.playback.getCurrentTrack().then(function (track) {
                     console.log("Now playing:", trackDesc(track));
                 });
+                
             });
         });
     })
@@ -91,25 +49,13 @@ var queueAndPlay = function (playlistNum, trackNum) {
     .done();                            // ...or they'll be thrown here
 };
 
-var addListeners = function() {
+jQuery( document ).ready(function() {
+	
+	connect( loadPlayLists );
 
-	$jq(".playlist").click( function() {
-		var uri = $jq(this).attr("data-playlist-uri");
-		var playList = mopidy.playlists.lookup( uri ).then( function( list ) {
-			var tracks = list.tracks;
-			clearTrackList();
-			addToTrackList( tracks );
-			playTrackList();
-		});
-	});
+} );
 
-}
 
-var mopidy = new Mopidy({
-    webSocketUrl: "ws://192.168.0.112:6680/mopidy/ws/"
-});
-mopidy.on(console.log.bind(console));
-mopidy.on("state:online", playLists );
 </script>
 </body>
 
