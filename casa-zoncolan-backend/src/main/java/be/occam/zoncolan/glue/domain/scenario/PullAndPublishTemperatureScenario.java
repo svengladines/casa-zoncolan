@@ -1,4 +1,4 @@
-package be.occam.zoncolan.domain.scenario;
+package be.occam.zoncolan.glue.domain.scenario;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-import be.occam.zoncolan.domain.people.MailMan;
+import be.occam.zoncolan.glue.domain.people.MailMan;
 import be.occam.zoncolan.heat.domain.honeywell.Client;
 import be.occam.zoncolan.heat.domain.honeywell.LocationStatus;
 import be.occam.zoncolan.heat.web.dto.ThermostatDTO;

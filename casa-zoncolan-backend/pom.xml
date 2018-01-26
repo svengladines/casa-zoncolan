@@ -8,18 +8,48 @@
   	<name>casa-zoncolan-backend</name>
   	<description>casa-zoncolan-backend</description>
 	<parent>
-		<artifactId>colloseum-parent-pom</artifactId>
-		<groupId>be.occam.colloseum</groupId>
-		<version>1.0-LATEST-SNAPSHOT</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.3.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	
 	<dependencies>
+	
+	<!-- occam -->
 	
 		<dependency>
 			<type>jar</type>
 			<groupId>be.occam</groupId>
 			<artifactId>occam-utils</artifactId>
 			<version>1.0-LATEST-SNAPSHOT</version>
+		</dependency>
+		
+	<!-- 3P -->
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
 		</dependency>
 		
 		<dependency>
@@ -62,23 +92,12 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${org.springframework.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>be.occam.colloseum</groupId>
-			<artifactId>colloseum-appengine</artifactId>
-			<version>1.0-LATEST-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.15</version>
 		</dependency>
+		
+		<!-- test -->
 		
 		<dependency>
 			<groupId>be.occam.test</groupId>
@@ -87,24 +106,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-testing</artifactId>
-			<version>1.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-api-stubs</artifactId>
-			<version>1.8.1</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
 	</dependencies>
 
 </project>

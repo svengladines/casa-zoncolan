@@ -1,4 +1,4 @@
-package be.occam.zoncolan.domain.people;
+package be.occam.zoncolan.glue.domain.people;
 
 import java.util.Properties;
 

@@ -6,7 +6,7 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import be.occam.zoncolan.heat.web.controller.ScenarioController;
+import be.occam.zoncolan.glue.web.controller.ScenarioController;
 import be.occam.zoncolan.heat.web.controller.ThermostatController;
 
 @Configuration

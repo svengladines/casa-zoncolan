@@ -1,4 +1,4 @@
-package be.occam.zoncolan.domain.scenario;
+package be.occam.zoncolan.glue.domain.scenario;
 
 public abstract class Scenario {
 	

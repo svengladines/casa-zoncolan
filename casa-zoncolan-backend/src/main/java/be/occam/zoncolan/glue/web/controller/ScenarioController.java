@@ -1,4 +1,4 @@
-package be.occam.zoncolan.heat.web.controller;
+package be.occam.zoncolan.glue.web.controller;
 
 import static be.occam.utils.spring.web.Controller.response;
 
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import be.occam.zoncolan.domain.scenario.PullAndPublishTemperatureScenario;
+import be.occam.zoncolan.glue.domain.scenario.PullAndPublishTemperatureScenario;
 import be.occam.zoncolan.heat.web.util.DataGuard;
 
 @Controller
