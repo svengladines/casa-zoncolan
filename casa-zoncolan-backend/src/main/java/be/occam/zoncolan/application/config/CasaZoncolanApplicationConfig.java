@@ -19,8 +19,6 @@ import be.occam.zoncolan.heat.domain.honeywell.Client;
 import be.occam.zoncolan.heat.domain.honeywell.HeatManForHoneyWell;
 import be.occam.zoncolan.heat.domain.people.HeatMan;
 import be.occam.zoncolan.heat.domain.service.ThermostatService;
-import be.occam.zoncolan.heat.web.util.DataGuard;
-import be.occam.zoncolan.heat.web.util.NoopGuard;
 
 @Configuration
 @EnableTransactionManagement
@@ -94,19 +92,6 @@ public class CasaZoncolanApplicationConfig {
 			return new HeatManForHoneyWell();
 		}
 		
-	}
-	
-	@Configuration
-	@Profile({ConfigurationProfiles.PRODUCTION})
-	static class DomainConfigForProduction {
-		
-		@Bean
-		DataGuard dataGuard() {
-			
-			return new NoopGuard();
-			
-		}
-	
 	}
 	
 }

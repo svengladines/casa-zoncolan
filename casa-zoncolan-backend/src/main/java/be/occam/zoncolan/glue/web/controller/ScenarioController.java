@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import be.occam.zoncolan.glue.domain.scenario.PullAndPublishTemperatureScenario;
-import be.occam.zoncolan.heat.web.util.DataGuard;
 
 @Controller
 @RequestMapping(value="/scenarios/{id}")

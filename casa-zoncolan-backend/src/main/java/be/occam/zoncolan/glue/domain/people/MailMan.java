@@ -11,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import be.occam.zoncolan.heat.web.util.DataGuard;
-
 public class MailMan {
 	
 	protected final Logger logger
@@ -21,13 +19,8 @@ public class MailMan {
 	@Resource
 	JavaMailSender javaMailSender;
 	
-	@Resource
-	DataGuard dataGuard;
-	
 	public boolean deliver( MimeMessage mimeMessage ) {
 		try {
-			
-			dataGuard.guard();
 			
 			Properties props = new Properties();
 			// SGL| doesn't seem to work ... tries SMTP
