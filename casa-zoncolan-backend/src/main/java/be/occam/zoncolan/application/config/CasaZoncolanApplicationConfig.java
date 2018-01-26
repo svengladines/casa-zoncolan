@@ -57,7 +57,7 @@ public class CasaZoncolanApplicationConfig {
 		
 		@Bean
 		public FTPClient ftpClient() {
-			return new FTPClient( "94.198.164.46", "pirlewietbe", "d;giTaal.15");
+			return new FTPClient( "", "", "");
 		}
 		
 		@Bean
