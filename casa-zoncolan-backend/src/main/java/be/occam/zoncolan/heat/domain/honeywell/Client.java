@@ -101,6 +101,8 @@ public class Client {
 		
 		
 		try {
+			
+			logger.info( "connecting client with credentials [{}/{}]: {} ", this.userName, this.passWord );
 		
 			ResponseEntity<String> loginResponse
 				= postMultiPart( url, String.class, this.fields(), this.headers() );

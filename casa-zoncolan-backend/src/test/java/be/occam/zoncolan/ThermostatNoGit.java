@@ -1,4 +1,4 @@
-package be.occam.zoncolan.domain.heat;
+package be.occam.zoncolan;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

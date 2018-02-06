@@ -4,10 +4,14 @@ import be.occam.zoncolan.heat.web.dto.ThermostatDTO;
 
 
 public class Thermostat {
+	
+	public static Float TEMP_OFF = 14.5F;
+	public static Double TEMP_OFF_DOUBLE = 14.5D;
 
 	protected String id;
 	protected Float currentTemperature;
 	protected Float targetTemperature;
+	protected Status status;
 	
 	public String getID() {
 		return id;
@@ -35,6 +39,14 @@ public class Thermostat {
 		return this;
 	}
 	
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
 	public static Thermostat from( ThermostatDTO f ) {
 		
 		Thermostat t

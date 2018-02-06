@@ -13,18 +13,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import be.occam.zoncolan.heat.domain.Status;
 import be.occam.zoncolan.heat.domain.people.Actor;
 import be.occam.zoncolan.heat.domain.service.ThermostatService;
 import be.occam.zoncolan.heat.web.dto.ThermostatDTO;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping(value="/heat/thermostats/{id}")
+@RequestMapping(value="/heating")
 public class ThermostatController {
 	
 	private final Logger logger 
@@ -36,14 +38,13 @@ public class ThermostatController {
 	@RequestMapping( method = { RequestMethod.GET } )
 	@ResponseBody
 	public ResponseEntity<ThermostatDTO> retrieve( 
-			@PathVariable("id") String id, 
 			HttpServletRequest httpServletRequest ) {
 		
 		Actor actor
 			= actor( httpServletRequest );
 		
 		ThermostatDTO thermostatDTO
-			= this.thermostatService.retrieve( id, actor );
+			= this.thermostatService.retrieve( "zoncolan", actor );
 		
 		logger.info( "temperature is [{}]", thermostatDTO.getCurrentTemperature() );
 		
@@ -51,21 +52,21 @@ public class ThermostatController {
 			
 	}
 	
-	@RequestMapping( value="off", method = { RequestMethod.GET } )
+	@RequestMapping( value="/status", method = { RequestMethod.PUT } )
 	@ResponseBody
-	public ResponseEntity<ThermostatDTO> off( 
-			@PathVariable("id") String id, 
+	public ResponseEntity<Status> putStatus( 
+			@RequestBody Status status,
 			HttpServletRequest httpServletRequest ) {
 		
 		Actor actor
 			= actor( httpServletRequest );
 		
 		ThermostatDTO thermostatDTO
-			= this.thermostatService.off( id, actor );
+			= this.thermostatService.updateStatus( "zoncolan", status, actor );
 		
 		logger.info( "temperature is [{}]", thermostatDTO.getCurrentTemperature() );
 		
-		return response( thermostatDTO , HttpStatus.OK );
+		return response( thermostatDTO.getStatus() , HttpStatus.OK );
 			
 	}
 		
