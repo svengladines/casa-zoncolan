@@ -16,8 +16,39 @@
 
 <body>
 
-	<div id="playlist">
+ 	<script id="playListTemplate" type="text/template">
+			{{#playList}}
+  				<h1>{{name}}</h1>
+			{{/playList}}
+			{{#status}}
+				{{.}}
+			{{/status}}
+			{{#currentTrack}}
+				<span>Nu:</span><span id="currentTrackName">{{name}}</span><br/>
+			{{/currentTrack}}
+			{{^currentTrack}}
+  				Currently no song
+			{{/currentTrack}}
+			{{#trackList}}
+				Songs to play: {{length}}
+			{{/trackList}}
+	</script>
+
+	<div id="playList">
+	
+		<h1 id="playlistName"></h1>
 		
+		<div>
+			
+			<span>Hierna nog: </span><span id="songsToPlay"></span> liedjes<br/>
+		</div>
+		
+	</div>
+	
+	<div id="controls">
+		<button id="play" type="button" value="Play">P</button>
+		<button id="pause" type="button" value="Pauze">Pz</button>
+		<button id="stop" type="button" value="Stop">S</button>
 	</div>
 
 	<script>

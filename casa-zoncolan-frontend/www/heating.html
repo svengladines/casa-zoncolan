@@ -1,0 +1,45 @@
+<html>
+
+<head>
+
+<head>
+  	<meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+  
+    
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="js/casa-zoncolan.js"></script>
+	<script type="text/javascript" src="js/heating.js"></script>
+
+</head>
+
+<body>
+
+	<!-- current temperature -->
+	<section id="current">
+		<span id="currentTemperature">--</span>&nbsp;<span>graden</span>
+	</section>
+	
+	<section id="target">
+		<span id="targetTemperature">--</span>&nbsp;<span>graden</span>
+	</section>
+	
+	<section id="actions">
+		<button id="turnOffBtn" type="button">Zet af</button>
+		<button id="turnOnBtn" type="button">Zet aan</button>
+	</section>
+
+	<script>
+		var $jq = jQuery.noConflict();
+		$jq( document ).ready(function() {
+	
+			loadHeating();
+	
+		} );
+
+</script>
+</body>
+
+</html>

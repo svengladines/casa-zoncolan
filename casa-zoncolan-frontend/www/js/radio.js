@@ -1,4 +1,5 @@
 var mopidy;
+var playList;
 
 var connect = function ( callback ) {
 	
@@ -29,13 +30,33 @@ var tuneIn = function (  ) {
 	
 	mopidy.playlists.lookup( uri ).then( function( list ) {
 		renderPlayList( list );
+	});
+	
+	addListeners();
+	
+};
+
+var play = function ( ) {
+
+	var uri
+		= getParameter( window.location.href, "q" );
+
+	mopidy.playlists.lookup( uri ).then( function( list ) {
 		var tracks = list.tracks;
 		clearTrackList();
 		addToTrackList( tracks );
 		playTrackList();
+		renderPlayList( list );
 	});
 	
-};
+}
+
+var stop = function ( ) {
+	
+	clearTrackList();
+	
+}
+
 
 var clearTrackList = function() {
 
@@ -79,16 +100,26 @@ var renderPlayLists = function( playlists ) {
 		lists.append( listItem );		
 
 	}
-
-	addListeners();
 	
 };
 
 var renderPlayList = function( playlist ) {
 
-	$jq("#playlist").html( playlist.name );
+	var playListTemplate = $jq("#playListTemplate");
+	var trackListTemplate = $jq("#trackListTemplate");
+
+	mopidy.playback.getCurrentTlTrack().then( function( tltrack ) { $jq("#playList").html ( Mustache.render(playListTemplate, {playList: playlist, currentTrack: tltrack }) ); } );
+	
+	mopidy.tracklist.getLength().then( function( x ) { $jq("#trackList").html( Mustache.render(trackListTemplate, {playList: playlist, currentTrack: tltrack }) ) } );
 
 };
+
+var addListeners = function() {
+	
+	$jq("#play").click( function() { play() } );
+	$jq("#stop").click( function() { stop() } );
+	
+}
 
 var logEvent = function(x,y) {
 	var e = event;

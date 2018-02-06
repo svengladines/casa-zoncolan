@@ -1,4 +1,9 @@
-var $jq = jQuery.noConflict();
+var scheme = "http://localhost:8068";
+// var scheme = "http://vive-le-velo-backend.appspot.com";
+
+var url = function ( sub ) {
+	return scheme + "/api" + sub;
+}
 
 var getParameter = function (url, key) {
 	var parameter = null;
