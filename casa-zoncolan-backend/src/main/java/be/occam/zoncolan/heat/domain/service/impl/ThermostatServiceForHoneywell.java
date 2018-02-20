@@ -129,29 +129,29 @@ protected Schedule schedule( Actor actor ) {
 	
 }
 
-@Override
-public Status turnOn(Actor actor) {
-
-	logger.info( "[{}], turn on heating", actor.getUserID() );
+	@Override
+	public Status turnOn(Actor actor) {
 	
-	
-	LocationStatus status 
-		= client( actor ).connect().account().locations().first().fetchStatus();
-
-	Zone zone = status.gateWays().get( 0 ).temperatureControlSystems().get( 0 ).getZones().get( 0 );
-	
-	logger.info( "[{}], zone ID is [{}]", actor.getUserID(), zone.getZoneId() );
-
-	//client ( actor ).putHeatPoint( zone.getZoneId(), 5.0D );
-	Zone z = client ( actor ).getZone( zone.getZoneId() );
-	
-	zone.getSetPointStatus().setTargetHeatTemperature( 18.5D );
-	
-	client ( actor ).putZone( zone.getZoneId(), zone );
-	
-	return Status.on;
+		logger.info( "[{}], turn on heating", actor.getUserID() );
 		
-}
+		
+		LocationStatus status 
+			= client( actor ).connect().account().locations().first().fetchStatus();
+	
+		Zone zone = status.gateWays().get( 0 ).temperatureControlSystems().get( 0 ).getZones().get( 0 );
+		
+		logger.info( "[{}], zone ID is [{}]", actor.getUserID(), zone.getZoneId() );
+	
+		//client ( actor ).putHeatPoint( zone.getZoneId(), 5.0D );
+		Zone z = client ( actor ).getZone( zone.getZoneId() );
+		
+		zone.getSetPointStatus().setTargetHeatTemperature( Thermostat.TEMP_ON_DOUBLE );
+		
+		client ( actor ).putZone( zone.getZoneId(), zone );
+		
+		return Status.on;
+			
+	}
 
 
 	@Override

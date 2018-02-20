@@ -7,6 +7,9 @@ public class Thermostat {
 	
 	public static Float TEMP_OFF = 14.5F;
 	public static Double TEMP_OFF_DOUBLE = 14.5D;
+	
+	public static Float TEMP_ON = 18.5F;
+	public static Double TEMP_ON_DOUBLE = 18.5D;
 
 	protected String id;
 	protected Float currentTemperature;

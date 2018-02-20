@@ -61,10 +61,12 @@ public class ThermostatController {
 		Actor actor
 			= actor( httpServletRequest );
 		
+		logger.info( "turning heating [{}]", status );
+		
 		ThermostatDTO thermostatDTO
 			= this.thermostatService.updateStatus( "zoncolan", status, actor );
 		
-		logger.info( "temperature is [{}]", thermostatDTO.getCurrentTemperature() );
+		logger.info( "target temperature is [{}]", thermostatDTO.getTargetTemperature() );
 		
 		return response( thermostatDTO.getStatus() , HttpStatus.OK );
 			

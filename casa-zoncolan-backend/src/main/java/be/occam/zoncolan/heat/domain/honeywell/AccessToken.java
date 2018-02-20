@@ -1,6 +1,6 @@
 package be.occam.zoncolan.heat.domain.honeywell;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * {scope=EMEA-V1-Basic EMEA-V1-Anonymous},

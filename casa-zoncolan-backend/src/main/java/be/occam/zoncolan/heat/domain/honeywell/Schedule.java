@@ -1,6 +1,6 @@
 package be.occam.zoncolan.heat.domain.honeywell;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * "userId": "1175639",
