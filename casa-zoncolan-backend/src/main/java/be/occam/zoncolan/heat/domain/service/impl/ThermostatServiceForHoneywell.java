@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import be.occam.zoncolan.heat.domain.Status;
 import be.occam.zoncolan.heat.domain.Thermostat;
 import be.occam.zoncolan.heat.domain.honeywell.Client;
+import be.occam.zoncolan.heat.domain.honeywell.HoneyWellException;
 import be.occam.zoncolan.heat.domain.honeywell.LocationStatus;
 import be.occam.zoncolan.heat.domain.honeywell.Schedule;
 import be.occam.zoncolan.heat.domain.honeywell.Zone;
@@ -35,6 +36,8 @@ public Thermostat ping( Actor actor ) {
 	Thermostat thermostat
 		= new Thermostat();
 	
+	try {
+	
 	LocationStatus status 
 		= client( actor ).connect().account().locations().first().fetchStatus();
 		
@@ -58,6 +61,10 @@ public Thermostat ping( Actor actor ) {
 	logger.info( "target temperature is [{}]", currentTarget );
 	
 	thermostat.setTargetTemperature( currentTarget );
+	}
+	catch( HoneyWellException e ) {
+		logger.warn( "Honeywell exception", e );
+	}
 	
 	return thermostat;
 	

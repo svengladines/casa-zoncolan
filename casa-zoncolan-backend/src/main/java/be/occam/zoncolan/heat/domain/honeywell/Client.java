@@ -1,7 +1,8 @@
 package be.occam.zoncolan.heat.domain.honeywell;
 
-import static be.occam.utils.spring.web.Client.*;
+import static be.occam.utils.spring.web.Client.getJSON;
 import static be.occam.utils.spring.web.Client.postMultiPart;
+import static be.occam.utils.spring.web.Client.putJSON;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -10,17 +11,17 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
-import be.occam.zoncolan.heat.domain.honeywell.SetPointStatus.SetPointMode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class Client {
@@ -94,55 +95,70 @@ public class Client {
     	this.passWord = passWord;
     	return this;
     }
+    
+    public Client clearToken() {
+    	
+    	this.accessToken = null;
+
+    	return this;
+		
+	}
 	
 	public Client connect() {
 		
 		String url
 			= new StringBuilder("https://").append( this.host ).append( this.tokenPath ).toString();
 		
+		if ( accessToken == null ) {
 		
-		try {
+			try {
+				
+				logger.info( "connecting client with credentials [{}/{}] ", this.userName, this.passWord );
 			
-			logger.info( "connecting client with credentials [{}/{}]: {} ", this.userName, this.passWord );
-		
-			ResponseEntity<String> loginResponse
-				= postMultiPart( url, String.class, this.fields(), this.headers() );
-			
-			logger.info( "login response code: {} ", loginResponse.getStatusCode() );
-			logger.info( "login response body: {} ", loginResponse.getBody() );
-			
-			URI uri 
-				= loginResponse.getHeaders().getLocation();
-
-			if ( uri != null ) {
-				logger.info( "login response location header: {} ", uri.toString() );
-			}	
-			else {
+				ResponseEntity<String> loginResponse
+					= postMultiPart( url, String.class, this.fields(), this.headers() );
 				
-				String responseJSON
-					= loginResponse.getBody();
+				logger.info( "login response code: {} ", loginResponse.getStatusCode() );
+				logger.info( "login response body: {} ", loginResponse.getBody() );
 				
-				logger.info( "json = [{}]", responseJSON );
+				URI uri 
+					= loginResponse.getHeaders().getLocation();
+	
+				if ( uri != null ) {
+					logger.info( "login response location header: {} ", uri.toString() );
+				}	
+				else {
+					
+					String responseJSON
+						= loginResponse.getBody();
+					
+					logger.info( "json = [{}]", responseJSON );
+					
+					this.accessToken = this.objectMapper.reader( AccessToken.class ).readValue( responseJSON );
+					
+					logger.info( "access_token = [{}]", this.accessToken );
+					
+				}
+			}
+			catch ( HttpClientErrorException e) {
+				logger.warn( "http request for oauth token failed", e );
+				try {
+					String x 
+						= new String( e.getResponseBodyAsByteArray(), "utf-8" );
+					throw new HoneyWellException( x );
+				}
+				catch( UnsupportedEncodingException ignore ) {}
 				
-				this.accessToken = this.objectMapper.reader( AccessToken.class ).readValue( responseJSON );
-				
-				logger.info( "access_token = [{}]", this.accessToken );
-				
+			} catch (JsonProcessingException e) {
+				logger.warn( "could not parse JSON response", e );
+			} catch (IOException e) {
+				logger.warn( "could not process JSON response", e );
 			}
 		}
-		catch ( HttpClientErrorException e) {
-			try {
-				String x 
-					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
-				logger.info( new String( x ) );
-			}
-			catch( UnsupportedEncodingException ignore ) {}
-			
-		} catch (JsonProcessingException e) {
-			logger.warn( "could not parse JSON response", e );
-		} catch (IOException e) {
-			logger.warn( "could not process JSON response", e );
-		} 
+		else {
+			// no need to login, we have an access token
+			logger.info( "connect; using existing access token [{}]", this.accessToken );
+		}
 		
 		return this;
 		
@@ -173,10 +189,15 @@ public class Client {
 			
 		}
 		catch ( HttpClientErrorException e) {
+			logger.warn( "http request failed", e );
 			try {
+				if ( HttpStatus.UNAUTHORIZED.equals( e.getStatusCode() ) ) {
+					this.clearToken();
+					return this.connect().account();
+				}
 				String x 
 					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
-				logger.info( new String( x ) );
+				throw new HoneyWellException( x );
 			}
 			catch( UnsupportedEncodingException ignore ) {}
 		} catch (JsonProcessingException e) {
@@ -219,7 +240,7 @@ public class Client {
 			try {
 				String x 
 					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
-				logger.info( new String( x ) );
+				throw new HoneyWellException( x );
 			}
 			catch( UnsupportedEncodingException ignore ) {}
 		} catch (JsonProcessingException e) {
@@ -262,7 +283,7 @@ public class Client {
 			try {
 				String x 
 					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
-				logger.info( new String( x ) );
+				throw new HoneyWellException( x );
 			}
 			catch( UnsupportedEncodingException ignore ) {}
 		} /*catch (JsonProcessingException e) {
@@ -275,7 +296,10 @@ public class Client {
 		
 	}
 	
-	protected Map<String,String> headers() {
+	protected Map<String,String> headers( ) {
+		return headers( true );
+	}
+	protected Map<String,String> headers( boolean useAccessToken ) {
 		
 		Map<String,String> headers
 			= new HashMap<String,String>();
@@ -285,7 +309,7 @@ public class Client {
 	    headers.put("Accept", "application/json");
 	    headers.put("applicationId", this.appID );
 	    
-	    if ( this.accessToken == null ) { 
+	    if ( ( ! useAccessToken ) || ( this.accessToken == null ) ) { 
 	    	headers.put("Authorization", "Basic MmZmMTUwYjQtYTM4NS00MGQ1LTg4OTktNWM2ZDg4ZDJjYmMyOjZGODhCOTgwLUI5OTUtNDUxRC04RTJBLTY2REMyQkNCRDU3MQ==" );
 	    }
 	    else {
@@ -335,7 +359,7 @@ public class Client {
 			try {
 				String x 
 					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
-				logger.info( new String( x ) );
+				throw new HoneyWellException( x );
 			}
 			catch( UnsupportedEncodingException ignore ) {}
 		} catch (JsonProcessingException e) {
@@ -358,9 +382,14 @@ public class Client {
 			StringWriter sw
 				= new StringWriter();
 			
+			Double target
+				= zone.getSetPointStatus().getTargetHeatTemperature();
+			
 			String json
 				// = sw.toString();
-				= "{\"heatSetpointValue\": 5.5,\"setpointMode\": \"PermanentOverride\"}";
+				= String.format("{\"heatSetpointValue\": %s,\"setpointMode\": \"PermanentOverride\"}", target );
+			
+			logger.info( "PUT zone json: {}", json );
 		
 			ResponseEntity<String> getResponse
 				= putJSON( url, json, this.headers(), zoneID );
@@ -383,7 +412,7 @@ public class Client {
 			try {
 				String x 
 					= new String( e.getResponseBodyAsByteArray(), "utf-16" );
-				logger.info( new String( x ) );
+				throw new HoneyWellException( x );
 			}
 			catch( UnsupportedEncodingException ignore ) {}
 		} catch (JsonProcessingException e) {
@@ -424,7 +453,7 @@ public class Client {
 			try {
 				String x 
 					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
-				logger.info( new String( x ) );
+				throw new HoneyWellException( x );
 			}
 			catch( UnsupportedEncodingException ignore ) {}
 		} catch (JsonProcessingException e) {

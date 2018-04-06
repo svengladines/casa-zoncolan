@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  	<modelVersion>4.0.0</modelVersion>
+	
+ 	<groupId>be.occam.zoncolan.pi</groupId>
+ 	<artifactId>zoncolan-pi-push-me</artifactId>
+  	<version>1.0-LATEST-SNAPSHOT</version>
+  	<packaging>jar</packaging>
+  	<name>zoncolan-pi-push-me</name>
+  	<description>zoncolan-pi-push-me</description>
+	<parent>
+		<groupId>be.occam</groupId>
+		<artifactId>occam-parent-pom</artifactId>
+		<version>1.0-LATEST-SNAPSHOT</version>
+	</parent>
+	
+	<dependencies>
+	
+	<!-- occam -->
+	
+		<dependency>
+			<type>jar</type>
+			<groupId>be.occam</groupId>
+			<artifactId>occam-utils</artifactId>
+			<version>1.0-LATEST-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>com.pi4j</groupId>
+    		<artifactId>pi4j-core</artifactId>
+   			<version>1.1</version>
+		</dependency>
+		
+	</dependencies>
+	
+		<build>
+		 <extensions>
+      		<extension>
+    			<groupId>org.apache.maven.wagon</groupId>
+    			<artifactId>wagon-ftp</artifactId>
+    			<version>3.0.0</version>
+			</extension>
+		</extensions>
+		<plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>/src/assembly/jar-with-pi4j.xml</descriptor>
+                    </descriptors>
+                    <archive>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+		
+			<plugin>
+	    		<groupId>org.codehaus.mojo</groupId>
+	    		<artifactId>wagon-maven-plugin</artifactId>
+	    		<version>1.0</version>
+	    		<executions>
+	    			<execution>
+	    				<id>upload-to-pi</id>
+	    				<phase>install</phase>
+	    				<goals>
+	    					<goal>upload</goal>
+	    				</goals>
+	    				<configuration>
+	    					<fromDir>target/classes</fromDir>
+	    					<toDir>/</toDir>
+	    					<includes>
+	    							**/*.jar
+	    					</includes>
+	    					<url>ftp://192.168.0.212</url>
+	    					<serverId>ftp-pi</serverId>
+	    				</configuration>
+	    			</execution>
+	    		
+	    		</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	
+</project>

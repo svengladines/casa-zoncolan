@@ -33,6 +33,7 @@ public class ThermostatController {
 	
 	@RequestMapping( method = { RequestMethod.GET } )
 	@ResponseBody
+	@CrossOrigin(origins = "http://www.debrodders.be")
 	public ResponseEntity<ThermostatDTO> retrieve( 
 			HttpServletRequest httpServletRequest ) {
 		

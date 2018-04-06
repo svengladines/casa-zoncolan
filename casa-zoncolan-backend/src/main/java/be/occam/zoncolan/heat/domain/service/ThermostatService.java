@@ -13,15 +13,16 @@ public abstract class ThermostatService {
 			= new ThermostatDTO();
 		
 		Thermostat thermostat
-			= new Thermostat();
+			= this.ping( actor );
+		
 		thermostat.setID( id );
-		thermostat.setCurrentTemperature( this.feel( actor ) );
-		thermostat.setTargetTemperature( this.readTarget( actor ) );
+		// thermostat.setCurrentTemperature( this.feel( actor ) );
+		// thermostat.setTargetTemperature( this.readTarget( actor ) );
 		
-		Float target
-			= this.readTarget( actor );
+		// Float target
+			// = this.readTarget( actor );
 		
-		thermostat.setStatus( target.equals( Thermostat.TEMP_OFF ) ? Status.off : Status.on );
+		thermostat.setStatus( thermostat.getTargetTemperature().equals( Thermostat.TEMP_OFF ) ? Status.off : Status.on );
 		
 		dto = ThermostatDTO.from( thermostat );
 		return dto;
