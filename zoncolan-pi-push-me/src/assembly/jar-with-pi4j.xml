@@ -13,9 +13,6 @@
 	     	<useProjectArtifact>true</useProjectArtifact>
 	      	<useTransitiveDependencies>true</useTransitiveDependencies>
             <scope>runtime</scope>
-            <includes>
-       			 <include>be.occam.zoncolan.pi:*</include>
-            </includes>
             <unpack>true</unpack>
             <unpackOptions>
                 <excludes>

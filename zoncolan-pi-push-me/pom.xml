@@ -15,7 +15,7 @@
 	
 	<dependencies>
 	
-	<!-- occam -->
+	<!-- occam
 	
 		<dependency>
 			<type>jar</type>
@@ -30,24 +30,7 @@
 			</exclusions>
 		</dependency>
 		
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-		
+	-->
 		<dependency>
     		<groupId>com.pi4j</groupId>
     		<artifactId>pi4j-core</artifactId>
@@ -58,11 +41,11 @@
 	
 		<build>
 		 <extensions>
-      		<extension>
-    			<groupId>org.apache.maven.wagon</groupId>
-    			<artifactId>wagon-ftp</artifactId>
-    			<version>3.0.0</version>
-			</extension>
+		    <extension>
+       			<groupId>org.apache.maven.wagon</groupId>
+       			<artifactId>wagon-ssh</artifactId>
+       			<version>1.0-beta-6</version>
+     		</extension>
 		</extensions>
 		<plugins>
             <plugin>
@@ -101,11 +84,11 @@
 	    				</goals>
 	    				<configuration>
 	    					<fromDir>target/classes</fromDir>
-	    					<toDir>/</toDir>
+	    					<toDir>zoncolan-pi</toDir>
 	    					<includes>
 	    							**/*.jar
 	    					</includes>
-	    					<url>ftp://192.168.0.212</url>
+	    					<url>scp://192.168.0.212</url>
 	    					<serverId>ftp-pi</serverId>
 	    				</configuration>
 	    			</execution>

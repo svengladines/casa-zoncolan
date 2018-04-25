@@ -34,41 +34,100 @@ import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 /**
-* This example code demonstrates how to setup a listener
-* for GPIO pin state changes on the Raspberry Pi.
-*
-* @author Robert Savage
+* - 1 pushbutton to indicate 'right' answer: [0,1,2,3,4] (0=all correct)
+* - 4 leds at backend that indicate which answer was selected to be right
+* - 4 pushbuttons at the frontend to indicate answer -> listeners
+* - 
+* @author Sven Gladines
 */
 public class PushMe {
+	
+	protected final String[] answers 
+		= new String[] {null, null,null,null,null};
+	
+	protected int rightAnswer 
+		= 0;
+	
+	protected int giveAnswerIndex
+		= 0;
+	
+	public PushMe( String... answrs ) {
+		
+		for( int i = 0; i < answrs.length ; i++ ) {
+			this.answers[ i + 1 ] = answrs[ i ];
+		}
+		
+	}
+	
+	public void go( ) {
+	
+		System.out.println("[start feelin']");
+
+	     // create gpio controller
+	     final GpioController gpio 
+	     	= GpioFactory.getInstance();
+
+	     // provision gpio pin #04 as an input pin with its internal pull down resistor enabled
+	     // connected to button to select answer
+	     final GpioPinDigitalInput selectAnswerPin 
+	     	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
+
+	     // set shutdown state for this input pin
+	     selectAnswerPin.setShutdownOptions(true);
+
+	     // create and register gpio pin listener
+	     selectAnswerPin.addListener(new GpioPinListenerDigital() {
+	    	 
+	         @Override
+	         public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+
+	        	 if ( PinState.HIGH.equals( event.getState() ) ) {
+	        		 
+	        		 System.out.println( "[button pushed]");
+	        	
+	        		 // each time button is pressed, select next answer or reset once looped
+	        		 rightAnswer += 1;
+	        		 rightAnswer = rightAnswer % answers.length; 
+	        		 System.out.println( String.format( "right answer now has index [%x] and value [%s]", rightAnswer, answers[ rightAnswer ] ) );
+	        	 }
+	             
+	         }
+
+	     });
+	     
+	     System.out.println( "Listener added");
+	     
+	     System.out.println( String.format( "current state is [%s]", selectAnswerPin.getState() ) );
+
+	     System.out.println( "Push the button ");
+		
+	}
+	
+	public void roundRobin( ) {
+		
+		System.out.println("[round robin]");
+
+	     // create gpio controller
+	     final GpioController gpio 
+	     	= GpioFactory.getInstance();
+
+	     final GpioPinDigitalOutput answerOnePin 
+	     	= gpio.provisionDigitalOutputPin( RaspiPin.GPIO_05, "answer one", PinState.LOW );
+
+	     answerOnePin.high();
+	     
+	     System.out.println( "High! ");
+		
+	}
 
  public static void main(String args[]) throws InterruptedException {
 	 
-     System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
-
-     // create gpio controller
-     final GpioController gpio 
-     	= GpioFactory.getInstance();
-
-     // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-     final GpioPinDigitalInput myButton 
-     	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
-
-     // set shutdown state for this input pin
-     myButton.setShutdownOptions(true);
-
-     // create and register gpio pin listener
-     myButton.addListener(new GpioPinListenerDigital() {
-    	 
-         @Override
-         public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-             // display pin state on console
-             System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
-         }
-
-     });
-
-     System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
-
+	 PushMe pushMe
+	 	= new PushMe( "Koe","Poes" ,"Schaap" , "Kippetje" );
+	 
+	 // pushMe.roundRobin();
+	 pushMe.go();
+     
      // keep program running until user aborts (CTRL-C)
      while(true) {
          Thread.sleep(500);
