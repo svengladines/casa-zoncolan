@@ -78,30 +78,33 @@
 		
 	</dependencies>
 	
-	<profiles>
-      <profile>
-         <id>gae</id>
-         <build>
-            <plugins>
-               <plugin>
-        			<groupId>org.apache.maven.plugins</groupId>
-        			<artifactId>maven-war-plugin</artifactId>
-        			<version>3.2.0</version>
-			        <configuration>
-			          <webResources>
-			            <resource>
-			              <!-- this is relative to the pom.xml directory -->
-			              <directory>gae</directory>
-			              <targetPath>WEB-INF</targetPath>
-			              <filtering>true</filtering>
-			            </resource>
-			          </webResources>
-        </configuration>
-      </plugin>
+	<build>
+		<plugins>
+        	<plugin>
+	        	<groupId>org.apache.maven.plugins</groupId>
+	        	<artifactId>maven-war-plugin</artifactId>
+	        	<version>3.2.0</version>
+		        <configuration>
+		          <webResources>
+		            <resource>
+		              <!-- this is relative to the pom.xml directory -->
+		              <directory>gae</directory>
+		              <targetPath>WEB-INF</targetPath>
+		              <filtering>true</filtering>
+		            </resource>
+		          </webResources>
+	        	</configuration>
+	      </plugin>
+      <plugin>
+	            <groupId>com.google.cloud.tools</groupId>
+	            <artifactId>appengine-maven-plugin</artifactId>
+	            <version>2.2.0</version>
+	            <configuration>
+	                <projectId>casa-zoncolan-backend</projectId>
+	                <version>2020</version>
+	            </configuration>
+	        </plugin>
             </plugins>
            </build>
-           </profile>
-	</profiles>
-	
 	
 </project>
