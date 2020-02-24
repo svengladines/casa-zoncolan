@@ -1,0 +1,149 @@
+{
+  "_args": [
+    [
+      "material-components-web",
+      "/media/psx/projecten/casa-zoncolan/casa-zoncolan-frontend"
+    ]
+  ],
+  "_from": "material-components-web@latest",
+  "_id": "material-components-web@0.31.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/material-components-web",
+  "_nodeVersion": "9.0.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/material-components-web_0.31.0_1519150978124_0.8014956394512454"
+  },
+  "_npmUser": {
+    "email": "mattgoo@gmail.com",
+    "name": "moog16"
+  },
+  "_npmVersion": "5.6.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "material-components-web",
+    "raw": "material-components-web",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/material-components-web/-/material-components-web-0.31.0.tgz",
+  "_shasum": "ae58294ccaefb74457cb07f7ce692cd75aad1eb7",
+  "_shrinkwrap": null,
+  "_spec": "material-components-web",
+  "_where": "/media/psx/projecten/casa-zoncolan/casa-zoncolan-frontend",
+  "bugs": {
+    "url": "https://github.com/material-components/material-components-web/issues"
+  },
+  "dependencies": {
+    "@material/animation": "^0.25.0",
+    "@material/auto-init": "^0.30.0",
+    "@material/base": "^0.29.0",
+    "@material/button": "^0.31.0",
+    "@material/card": "^0.31.0",
+    "@material/checkbox": "^0.31.0",
+    "@material/chips": "^0.31.0",
+    "@material/dialog": "^0.31.0",
+    "@material/drawer": "^0.30.0",
+    "@material/elevation": "^0.28.0",
+    "@material/fab": "^0.31.0",
+    "@material/form-field": "^0.31.0",
+    "@material/grid-list": "^0.30.0",
+    "@material/icon-toggle": "^0.31.0",
+    "@material/layout-grid": "^0.24.0",
+    "@material/line-ripple": "^0.30.0",
+    "@material/linear-progress": "^0.30.0",
+    "@material/list": "^0.31.0",
+    "@material/menu": "^0.31.0",
+    "@material/radio": "^0.31.0",
+    "@material/ripple": "^0.31.0",
+    "@material/rtl": "^0.30.0",
+    "@material/select": "^0.31.0",
+    "@material/selection-control": "^0.31.0",
+    "@material/slider": "^0.30.0",
+    "@material/snackbar": "^0.30.0",
+    "@material/switch": "^0.31.0",
+    "@material/tabs": "^0.31.0",
+    "@material/textfield": "^0.31.0",
+    "@material/theme": "^0.30.0",
+    "@material/toolbar": "^0.30.0",
+    "@material/typography": "^0.28.0"
+  },
+  "description": "Modular and customizable Material Design UI components for the web",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "fileCount": 8,
+    "integrity": "sha512-XnBxw43cwwXcJ3GafHtHNkQQDRGtkU0Ivs6YDFarTHygoS2qct/tXgsNdt9keRpbn+l8heYsGD51C/OIdYDdzA==",
+    "shasum": "ae58294ccaefb74457cb07f7ce692cd75aad1eb7",
+    "tarball": "https://registry.npmjs.org/material-components-web/-/material-components-web-0.31.0.tgz",
+    "unpackedSize": 1559684
+  },
+  "homepage": "https://github.com/material-components/material-components-web#readme",
+  "keywords": [
+    "material components",
+    "material design"
+  ],
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "kfranqueiro",
+      "email": "kenneth.franqueiro@gmail.com"
+    },
+    {
+      "name": "acdvorak",
+      "email": "acdvorak@gmail.com"
+    },
+    {
+      "name": "aprigogin",
+      "email": "andrey.prigogin@gmail.com"
+    },
+    {
+      "name": "bonniez",
+      "email": "bonniez@google.com"
+    },
+    {
+      "name": "bwobrien",
+      "email": "obrien.test@gmail.com"
+    },
+    {
+      "name": "amsheehan",
+      "email": "alex.m.sheehan@gmail.com"
+    },
+    {
+      "name": "lynnjepsen",
+      "email": "lynnjepsen@google.com"
+    },
+    {
+      "name": "material-admin",
+      "email": "lynnjepsen+npm@google.com"
+    },
+    {
+      "name": "moog16",
+      "email": "mattgoo@gmail.com"
+    },
+    {
+      "name": "patrickrodee",
+      "email": "prodee@google.com"
+    },
+    {
+      "name": "williamernest",
+      "email": "williamernest@google.com"
+    }
+  ],
+  "name": "material-components-web",
+  "optionalDependencies": {},
+  "readme": "# Material Components Web (MDC Web)\n\nThis package contains the master library for Material Components Web. It simply wraps all of its\nsibling packages up into one comprehensive library for convenience.\n\n## Installation\n\n```\nnpm install --save material-components-web\n```\n\n## Usage\n\n### Including the Sass\n\n```scss\n@import \"material-components-web/material-components-web\";\n```\n\n### Including the Javascript\n\n```js\nimport * as mdc from 'material-components-web';\nconst checkbox = new mdc.checkbox.MDCCheckbox(document.querySelector('.mdc-checkbox'));\n// OR\nimport { checkbox } from 'material-components-web';\nconst checkbox = new checkbox.MDCCheckbox(document.querySelector('.mdc-checkbox'));\n```\n\n> NOTE: Built CSS files as well as UMD JS bundles will be available as part of the package\n> post-alpha.\n\n### Auto-initialization of components\n\nThe `material-components-web` package automatically registers all MDC Web components with\n[mdc-auto-init](../mdc-auto-init), making it dead simple to create and initialize components\nwith zero configuration or manual work.\n\nFor example, say you want to use an [icon toggle](../mdc-icon-toggle). Simply render the necessary\nDOM, an attach the `data-mdc-auto-init=\"MDCIconToggle\"` attribute.\n\n```html\n<i class=\"mdc-icon-toggle material-icons\" role=\"button\" aria-pressed=\"false\"\n   aria-label=\"Add to favorites\" tabindex=\"0\"\n   data-toggle-on='{\"label\": \"Remove from favorites\", \"content\": \"favorite\"}'\n   data-toggle-off='{\"label\": \"Add to favorites\", \"content\": \"favorite_border\"}'\n   data-mdc-auto-init=\"MDCIconToggle\">\n  favorite_border\n</i>\n```\n\nThen at the bottom of your html, insert this one-line script tag:\n\n```html\n<script>mdc.autoInit()</script>\n```\n\nThis will automatically initialize the icon toggle, as well as any other components marked with the\nauto init data attribute. See [mdc-auto-init](../mdc-auto-init) for more info.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/material-components/material-components-web.git"
+  },
+  "version": "0.31.0"
+}

@@ -4,12 +4,12 @@
  	<groupId>be.occam.zoncolan</groupId>
  	<artifactId>casa-zoncolan-frontend</artifactId>
   	<version>1.0-LATEST-SNAPSHOT</version>
-  	<packaging>pom</packaging>
+  	<packaging>war</packaging>
   	<name>casa-zoncolan-frontend</name>
   	<description>casa-zoncolan-frontend</description>
 	<parent>
-		<artifactId>colloseum-parent-pom</artifactId>
-		<groupId>be.occam.colloseum</groupId>
+		<artifactId>occam-base-pom</artifactId>
+		<groupId>be.occam</groupId>
 		<version>1.0-LATEST-SNAPSHOT</version>
 	</parent>
 	
@@ -23,6 +23,21 @@
 		</extensions>
 		<plugins>
 			<plugin>
+	        			<groupId>org.apache.maven.plugins</groupId>
+	        			<artifactId>maven-war-plugin</artifactId>
+	        			<version>3.2.0</version>
+				        <configuration>
+				        	<failOnMissingWebXml>false</failOnMissingWebXml>
+				          <webResources>
+				            <resource>
+				              <!-- this is relative to the pom.xml directory -->
+				              <directory>www</directory>
+				              <filtering>true</filtering>
+				            </resource>
+				          </webResources>
+	        </configuration>
+	      </plugin>
+			<plugin>
 	    		<groupId>org.codehaus.mojo</groupId>
 	    		<artifactId>wagon-maven-plugin</artifactId>
 	    		<version>1.0</version>
@@ -34,7 +49,7 @@
 	    					<goal>upload</goal>
 	    				</goals>
 	    				<configuration>
-	    					<fromDir>www</fromDir>
+	    					<fromDir>${project.build.directory}/${project.artifactId}-${project.version}</fromDir>
 	    					<toDir>/svekke/zoncolan</toDir>
 	    					<includes>
 	    							**/*.html,**/*.css,**/*.js

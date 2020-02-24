@@ -1,0 +1,33 @@
+.casa-zoncolan-card-heating {
+	background-image: url("../img/heating.png");
+}
+
+.casa-zoncolan-contents {
+	padding: 1rem;
+}
+
+.casa-zoncolan-full {
+	width: 100%;
+}
+
+.casa-zoncolan-one-half {
+	width: 50%;
+}
+
+.casa-zoncolan-flex {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.casa-zoncolan-flex-item {
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.casa-zoncolan-one-third {
+	width: 33%;
+}
+
+.casa-zoncolan-two-third {
+	width: 66%;
+}
