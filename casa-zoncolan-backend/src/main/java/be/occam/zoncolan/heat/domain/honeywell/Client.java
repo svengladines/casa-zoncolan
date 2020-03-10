@@ -113,30 +113,30 @@ public class Client {
 		
 			try {
 				
-				logger.info( "connecting client with credentials [{}/{}] ", this.userName, this.passWord );
+				logger.debug( "connecting client with credentials [{}/{}] ", this.userName, this.passWord );
 			
 				ResponseEntity<String> loginResponse
 					= postMultiPart( url, String.class, this.fields(), this.headers() );
 				
-				logger.info( "login response code: {} ", loginResponse.getStatusCode() );
-				logger.info( "login response body: {} ", loginResponse.getBody() );
+				logger.debug( "login response code: {} ", loginResponse.getStatusCode() );
+				logger.debug( "login response body: {} ", loginResponse.getBody() );
 				
 				URI uri 
 					= loginResponse.getHeaders().getLocation();
 	
 				if ( uri != null ) {
-					logger.info( "login response location header: {} ", uri.toString() );
+					logger.debug( "login response location header: {} ", uri.toString() );
 				}	
 				else {
 					
 					String responseJSON
 						= loginResponse.getBody();
 					
-					logger.info( "json = [{}]", responseJSON );
+					logger.debug( "json = [{}]", responseJSON );
 					
 					this.accessToken = this.objectMapper.reader( AccessToken.class ).readValue( responseJSON );
 					
-					logger.info( "access_token = [{}]", this.accessToken );
+					logger.debug( "access_token = [{}]", this.accessToken );
 					
 				}
 			}
@@ -157,7 +157,7 @@ public class Client {
 		}
 		else {
 			// no need to login, we have an access token
-			logger.info( "connect; using existing access token [{}]", this.accessToken );
+			logger.debug( "connect; using existing access token [{}]", this.accessToken );
 		}
 		
 		return this;
@@ -175,17 +175,17 @@ public class Client {
 			ResponseEntity<String> getResponse
 				= getJSON( url, String.class, this.headers() );
 			
-			logger.info( "account GET response code: {} ", getResponse.getStatusCode() );
-			logger.info( "account GET response body: {} ", getResponse.getBody() );
+			logger.debug( "account GET response code: {} ", getResponse.getStatusCode() );
+			logger.debug( "account GET response body: {} ", getResponse.getBody() );
 			
 			String responseJSON
 					= getResponse.getBody();
 				
-			logger.info( "json = [{}]", responseJSON );
+			logger.debug( "json = [{}]", responseJSON );
 			
 			this.account = this.objectMapper.reader( Account.class ).readValue( responseJSON );
 			
-			logger.info( "user id is [{}]", this.account.getUserId() );
+			logger.debug( "user id is [{}]", this.account.getUserId() );
 			
 		}
 		catch ( HttpClientErrorException e) {
@@ -220,13 +220,13 @@ public class Client {
 			ResponseEntity<String> getResponse
 				= getJSON( url, String.class, this.headers(), this.account.getUserId() );
 			
-			logger.info( "account GET response code: {} ", getResponse.getStatusCode() );
-			logger.info( "account GET response body: {} ", getResponse.getBody() );
+			logger.debug( "account GET response code: {} ", getResponse.getStatusCode() );
+			logger.debug( "account GET response body: {} ", getResponse.getBody() );
 			
 			String responseJSON
 					= getResponse.getBody();
 				
-			logger.info( "json = [{}]", responseJSON );
+			logger.debug( "json = [{}]", responseJSON );
 			
 			Location[] locations = this.objectMapper.reader( Location[].class ).readValue( responseJSON );
 			
@@ -266,17 +266,17 @@ public class Client {
 			ResponseEntity<String> getResponse
 				= getJSON( url, String.class, this.headers(), this.account.getUserId() );
 			
-			logger.info( "account GET response code: {} ", getResponse.getStatusCode() );
-			logger.info( "account GET response body: {} ", getResponse.getBody() );
+			logger.debug( "account GET response code: {} ", getResponse.getStatusCode() );
+			logger.debug( "account GET response body: {} ", getResponse.getBody() );
 			
 			String responseJSON
 					= getResponse.getBody();
 				
-			logger.info( "json = [{}]", responseJSON );
+			logger.debug( "json = [{}]", responseJSON );
 			
 			// this.account = this.objectMapper.reader( Account.class ).readValue( responseJSON );
 			
-			// logger.info( "user id is [{}]", this.account.getUserId() );
+			// logger.debug( "user id is [{}]", this.account.getUserId() );
 			
 		}
 		catch ( HttpClientErrorException e) {
@@ -341,13 +341,13 @@ public class Client {
 			ResponseEntity<String> getResponse
 				= getJSON( url, String.class, this.headers(), locationId );
 			
-			logger.info( "location.status GET response code: {} ", getResponse.getStatusCode() );
-			logger.info( "location.status GET response body: {} ", getResponse.getBody() );
+			logger.debug( "location.status GET response code: {} ", getResponse.getStatusCode() );
+			logger.debug( "location.status GET response body: {} ", getResponse.getBody() );
 			
 			String responseJSON
 					= getResponse.getBody();
 				
-			logger.info( "json = [{}]", responseJSON );
+			logger.debug( "json = [{}]", responseJSON );
 			
 			LocationStatus locationStatus 
 				= this.objectMapper.reader( LocationStatus.class ).readValue( responseJSON );
@@ -389,18 +389,18 @@ public class Client {
 				// = sw.toString();
 				= String.format("{\"heatSetpointValue\": %s,\"setpointMode\": \"PermanentOverride\"}", target );
 			
-			logger.info( "PUT zone json: {}", json );
+			logger.debug( "PUT zone json: {}", json );
 		
 			ResponseEntity<String> getResponse
 				= putJSON( url, json, this.headers(), zoneID );
 			
-			logger.info( "zone PUT response code: {} ", getResponse.getStatusCode() );
-			logger.info( "zone PUT response body: {} ", getResponse.getBody() );
+			logger.debug( "zone PUT response code: {} ", getResponse.getStatusCode() );
+			logger.debug( "zone PUT response body: {} ", getResponse.getBody() );
 			
 			String responseJSON
 					= getResponse.getBody();
 				
-			logger.info( "json = [{}]", responseJSON );
+			logger.debug( "json = [{}]", responseJSON );
 			
 			SetPointStatus locationStatus 
 				= this.objectMapper.reader( SetPointStatus.class ).readValue( responseJSON );
@@ -435,13 +435,13 @@ public class Client {
 			ResponseEntity<String> getResponse
 				= getJSON( url, String.class, this.headers(), zoneID );
 			
-			logger.info( "location.status GET response code: {} ", getResponse.getStatusCode() );
-			logger.info( "location.status GET response body: {} ", getResponse.getBody() );
+			logger.debug( "location.status GET response code: {} ", getResponse.getStatusCode() );
+			logger.debug( "location.status GET response body: {} ", getResponse.getBody() );
 			
 			String responseJSON
 					= getResponse.getBody();
 				
-			logger.info( "json = [{}]", responseJSON );
+			logger.debug( "json = [{}]", responseJSON );
 			
 			Zone zone 
 				= this.objectMapper.reader( Zone.class ).readValue( responseJSON );
@@ -476,13 +476,13 @@ public class Client {
 			ResponseEntity<String> getResponse
 				= getJSON( url, String.class, this.headers(), zoneId );
 			
-			logger.info( "zone.schedule GET response code: {} ", getResponse.getStatusCode() );
-			logger.info( "zone.schedule GET response body: {} ", getResponse.getBody() );
+			logger.debug( "zone.schedule GET response code: {} ", getResponse.getStatusCode() );
+			logger.debug( "zone.schedule GET response body: {} ", getResponse.getBody() );
 			
 			String responseJSON
 					= getResponse.getBody();
 				
-			logger.info( "json = [{}]", responseJSON );
+			logger.debug( "json = [{}]", responseJSON );
 			
 			Schedule schedule 
 				= this.objectMapper.reader( Schedule.class ).readValue( responseJSON );
@@ -494,7 +494,7 @@ public class Client {
 			try {
 				String x 
 					= new String( e.getResponseBodyAsByteArray(), "utf-8" );
-				logger.info( new String( x ) );
+				logger.debug( new String( x ) );
 			}
 			catch( UnsupportedEncodingException ignore ) {}
 		} catch (JsonProcessingException e) {

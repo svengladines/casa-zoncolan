@@ -172,7 +172,7 @@ protected Schedule schedule( Actor actor ) {
 	
 		Zone zone = status.gateWays().get( 0 ).temperatureControlSystems().get( 0 ).getZones().get( 0 );
 		
-		logger.info( "[{}], zone ID is [{}]", actor.getUserID(), zone.getZoneId() );
+		logger.debug( "[{}], zone ID is [{}]", actor.getUserID(), zone.getZoneId() );
 	
 		//client ( actor ).putHeatPoint( zone.getZoneId(), 5.0D );
 		Zone z = client ( actor ).getZone( zone.getZoneId() );
@@ -181,7 +181,7 @@ protected Schedule schedule( Actor actor ) {
 		
 		client ( actor ).putZone( zone.getZoneId(), zone );
 		
-		return Status.on;
+		return Status.off;
 			
 	}
 

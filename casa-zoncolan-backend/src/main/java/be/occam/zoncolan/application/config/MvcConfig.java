@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import be.occam.zoncolan.glue.web.controller.ScenarioController;
+import be.occam.zoncolan.heat.web.controller.CronController;
 import be.occam.zoncolan.heat.web.controller.ThermostatController;
 
 @Configuration
@@ -55,6 +56,11 @@ public class MvcConfig {
 			
 			return new ThermostatController();
 			
+		}
+		
+		@Bean
+		public CronController cronController() {
+			return new CronController();
 		}
 		
 	}
